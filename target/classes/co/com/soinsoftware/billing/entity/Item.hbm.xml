@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 26-may-2016 15:17:44 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="co.com.soinsoftware.billing.entity.Item" table="item" catalog="billing" optimistic-lock="version">
+        <composite-id name="id" class="co.com.soinsoftware.billing.entity.ItemId">
+            <key-property name="idreceipt" type="int">
+                <column name="idreceipt" />
+            </key-property>
+            <key-property name="iditemconcept" type="int">
+                <column name="iditemconcept" />
+            </key-property>
+        </composite-id>
+        <property name="value" type="big_decimal">
+            <column name="value" precision="16" not-null="true" />
+        </property>
+        <property name="creation" type="timestamp">
+            <column name="creation" length="19" not-null="true" />
+        </property>
+        <property name="updated" type="timestamp">
+            <column name="updated" length="19" not-null="true" />
+        </property>
+        <property name="enabled" type="boolean">
+            <column name="enabled" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

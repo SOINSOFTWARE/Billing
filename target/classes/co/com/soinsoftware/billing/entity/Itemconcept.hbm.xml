@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 26-may-2016 15:17:44 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="co.com.soinsoftware.billing.entity.Itemconcept" table="itemconcept" catalog="billing" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="configuration" class="co.com.soinsoftware.billing.entity.Configuration" fetch="select">
+            <column name="idconfiguration" not-null="true" />
+        </many-to-one>
+        <property name="name" type="string">
+            <column name="name" length="60" not-null="true" />
+        </property>
+        <property name="percentage" type="big_decimal">
+            <column name="percentage" precision="16" not-null="true" />
+        </property>
+        <property name="creation" type="timestamp">
+            <column name="creation" length="19" not-null="true" />
+        </property>
+        <property name="updated" type="timestamp">
+            <column name="updated" length="19" not-null="true" />
+        </property>
+        <property name="enabled" type="boolean">
+            <column name="enabled" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
