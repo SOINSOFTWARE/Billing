@@ -1,4 +1,4 @@
-package co.com.soinsoftware.billing.DAO;
+package co.com.soinsoftware.billing.dao;
 
 import java.io.Serializable;
 

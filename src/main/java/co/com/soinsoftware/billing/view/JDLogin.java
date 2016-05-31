@@ -1,6 +1,5 @@
 package co.com.soinsoftware.billing.view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -22,13 +21,16 @@ import javax.swing.KeyStroke;
 import javax.swing.border.EmptyBorder;
 
 import co.com.soinsoftware.billing.controller.LoginController;
+import co.com.soinsoftware.billing.controller.MenuController;
 import co.com.soinsoftware.billing.entity.User;
 
+/**
+ * @author Carlos Rodriguez
+ * @since 30/05/2016
+ * @version 1.0
+ */
 public class JDLogin extends JDialog implements ActionListener {
 
-	/**
-	 * Default serial version.
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private static final String EMPTY_LOGIN = "Por favor complete la casilla login";
@@ -38,7 +40,7 @@ public class JDLogin extends JDialog implements ActionListener {
 	private static final String TITLE = "Facturador - Login";
 
 	private static final String WRONG_LOGIN = "¡Usuario o clave invalida!, intente nuevamente";
-	
+
 	private final LoginController controller;
 
 	private JTextField jtfUser;
@@ -49,9 +51,6 @@ public class JDLogin extends JDialog implements ActionListener {
 
 	private JButton jbtCancel;
 
-	/**
-	 * Create the login frame.
-	 */
 	public JDLogin() {
 		final Dimension screenSize = Toolkit.getDefaultToolkit()
 				.getScreenSize();
@@ -68,10 +67,11 @@ public class JDLogin extends JDialog implements ActionListener {
 		this.controller = new LoginController();
 	}
 
-	public void actionPerformed(ActionEvent evt) {
-		if (evt.getSource().equals(jbtLogin)) {
+	public void actionPerformed(final ActionEvent evt) {
+		final Object source = evt.getSource();
+		if (source.equals(this.jbtLogin)) {
 			this.validateLogin();
-		} else if (evt.getSource().equals(jbtCancel)) {
+		} else if (source.equals(this.jbtCancel)) {
 			System.exit(EXIT_ON_CLOSE);
 		} else if (evt.getActionCommand().equals("Cambiar contraseña")) {
 
@@ -85,87 +85,46 @@ public class JDLogin extends JDialog implements ActionListener {
 		panel.setBackground(ViewUtils.GREY);
 		panel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		panel.setLayout(null);
+		final JLabel jlbUser = ViewUtils.createJLabel("Login:", 175, 61);
+		final JLabel jlbPass = ViewUtils.createJLabel("Contraseña:", 175, 112);
 
-		final JLabel jlbUser = this.createJLabel("Login:", 175, 61);
-		final JLabel jlbPassword = this.createJLabel("Contraseña:", 175, 112);
-		jtfUser = this.createJTextField("login del usuario", 175, 81);
-		jtfUser.setDocument(new JTextFieldLimit(10));
-		jpfPassword = this.createJPasswordField("contrase\u00F1a", 175, 132);
-		jpfPassword.setDocument(new JTextFieldLimit(10));
-		jbtCancel = this.createJButton("Cancelar", KeyEvent.VK_C, 175, 175);
-		jbtLogin = this.createJButton("Entrar", KeyEvent.VK_E, 272, 175);
+		this.jtfUser = ViewUtils.createJTextField("login del usuario", 175, 81);
+		this.jtfUser.setDocument(new JTextFieldLimit(10));
+		this.jpfPassword = ViewUtils.createJPasswordField("contraseña", 175,
+				132);
+		this.jpfPassword.setDocument(new JTextFieldLimit(10));
+		this.jbtCancel = ViewUtils.createJButton("Cancelar", KeyEvent.VK_C,
+				175, 175);
+		this.jbtLogin = ViewUtils.createJButton("Entrar", KeyEvent.VK_E, 272,
+				175);
+		this.jbtCancel.addActionListener(this);
+		jbtLogin.addActionListener(this);
 
 		panel.add(jlbUser);
-		panel.add(jtfUser);
-		panel.add(jlbPassword);
-		panel.add(jpfPassword);
-		panel.add(jbtCancel);
-		panel.add(jbtLogin);
-
+		panel.add(this.jtfUser);
+		panel.add(jlbPass);
+		panel.add(this.jpfPassword);
+		panel.add(this.jbtCancel);
+		panel.add(this.jbtLogin);
 		return panel;
-	}
-
-	private JLabel createJLabel(final String label, final int x, final int y) {
-		final JLabel jlabel = new JLabel(label);
-		jlabel.setForeground(Color.BLACK);
-		jlabel.setFont(ViewUtils.VERDANA_BOLD);
-		jlabel.setBounds(x, y, 83, 20);
-		return jlabel;
-	}
-
-	private JTextField createJTextField(final String toolTip, final int x,
-			final int y) {
-		final JTextField textField = new JTextField();
-		textField.setToolTipText(toolTip);
-		textField.setFont(ViewUtils.VERDANA_PLAIN);
-		textField.setColumns(10);
-		textField.setBounds(x, y, 186, 20);
-		return textField;
-	}
-
-	private JPasswordField createJPasswordField(final String toolTip,
-			final int x, final int y) {
-		final JPasswordField password = new JPasswordField();
-		password.setToolTipText(toolTip);
-		password.setFont(ViewUtils.VERDANA_PLAIN);
-		password.setBounds(x, y, 186, 20);
-		return password;
-	}
-
-	private JButton createJButton(final String label, final int key,
-			final int x, final int y) {
-		final JButton button = new JButton(label);
-		button.setMnemonic(key);
-		button.setForeground(Color.WHITE);
-		button.setBackground(ViewUtils.BLUE);
-		button.setFont(ViewUtils.VERDANA_BOLD);
-		button.setBounds(x, y, 89, 23);
-		button.addActionListener(this);
-		return button;
 	}
 
 	private JMenuBar createMenuBar() {
 		final JMenuBar menuBar = new JMenuBar();
 		final JMenu menu = new JMenu("Opciones");
-		final JMenuItem miChangePass = this.createJMenuItem(
+		final JMenuItem miChangePass = ViewUtils.createJMenuItem(
 				"Cambiar contraseña", KeyEvent.VK_H,
 				KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.ALT_MASK));
-		final JMenuItem miGetPass = this.createJMenuItem(
+		miChangePass.addActionListener(this);
+		final JMenuItem miGetPass = ViewUtils.createJMenuItem(
 				"Recuperar contraseña", KeyEvent.VK_R,
 				KeyStroke.getKeyStroke(KeyEvent.VK_2, ActionEvent.ALT_MASK));
+		miGetPass.addActionListener(this);
 		menu.setMnemonic(KeyEvent.VK_O);
 		menu.add(miChangePass);
 		menu.add(miGetPass);
 		menuBar.add(menu);
 		return menuBar;
-	}
-
-	private JMenuItem createJMenuItem(final String label, final int key,
-			final KeyStroke keyStroke) {
-		final JMenuItem menuItem = new JMenuItem(label, key);
-		menuItem.setAccelerator(keyStroke);
-		menuItem.addActionListener(this);
-		return menuItem;
 	}
 
 	private void validateLogin() {
@@ -180,10 +139,22 @@ public class JDLogin extends JDialog implements ActionListener {
 			final User user = controller.selectUser(login, password);
 			if (user != null) {
 				this.setVisible(false);
-				// new JFOwnerAndPetsInfo().setVisible(true);
+				this.createAppFrames(user);
 			} else {
 				ViewUtils.showMessage(this, WRONG_LOGIN, TITLE, infoMessage);
 			}
 		}
+	}
+
+	private void createAppFrames(final User user) {
+		final JFMain mainFrame = new JFMain(user);
+		final JFUser userFrame = new JFUser(user);
+		final JFReceipt receiptFrame = new JFReceipt(user);
+		final MenuController menuController = new MenuController(mainFrame,
+				userFrame, receiptFrame);
+		mainFrame.addController(menuController);
+		userFrame.addController(menuController);
+		receiptFrame.addController(menuController);
+		mainFrame.setVisible(true);
 	}
 }

@@ -1,6 +1,6 @@
-package co.com.soinsoftware.billing.BLL;
+package co.com.soinsoftware.billing.bll;
 
-import co.com.soinsoftware.billing.DAO.UserDAO;
+import co.com.soinsoftware.billing.dao.UserDAO;
 import co.com.soinsoftware.billing.entity.User;
 
 /**
@@ -23,6 +23,14 @@ public class UserBLL {
 	
 	public User select(final String login, final String password) {
 		return this.dao.select(login, password);
+	}
+	
+	public User select(final long identification) {
+		return this.dao.select(identification);
+	}
+	
+	public void save(final User user) {
+		this.dao.save(user);
 	}
 	
 	private UserBLL() {

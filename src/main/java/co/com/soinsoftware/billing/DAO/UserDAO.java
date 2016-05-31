@@ -1,4 +1,4 @@
-package co.com.soinsoftware.billing.DAO;
+package co.com.soinsoftware.billing.dao;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -26,6 +26,24 @@ public class UserDAO extends AbstractDAO {
 		return user;
 	}
 
+	public User select(final long identification) {
+		User user = null;
+		try {
+			final Query query = this.createQuery(this
+					.getSelectStatementIdentification());
+			query.setParameter("identification", identification);
+			user = (query.list().isEmpty()) ? null : (User) query.list().get(0);
+		} catch (HibernateException ex) {
+			System.out.println(ex);
+		}
+		return user;
+	}
+	
+	public void save(final User user) {
+		boolean isNew = (user.getId() == null) ? true : false;
+		this.save(user, isNew);
+	}
+
 	@Override
 	protected String getSelectStatement() {
 		final StringBuilder query = new StringBuilder();
@@ -36,6 +54,12 @@ public class UserDAO extends AbstractDAO {
 	private String getSelectStatementLogin() {
 		final StringBuilder query = new StringBuilder(this.getSelectStatement());
 		query.append(" WHERE login = :login AND password = :password ");
+		return query.toString();
+	}
+
+	private String getSelectStatementIdentification() {
+		final StringBuilder query = new StringBuilder(this.getSelectStatement());
+		query.append(" WHERE identification = :identification ");
 		return query.toString();
 	}
 }
