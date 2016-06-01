@@ -43,6 +43,12 @@ public class ViewUtils {
 		JOptionPane.showMessageDialog(component, message, title, type);
 	}
 
+	protected static int showConfirmDialog(final Component component,
+			final Object message, final String title) {
+		return JOptionPane.showConfirmDialog(component, message, title,
+				JOptionPane.OK_CANCEL_OPTION);
+	}
+
 	protected static JLabel createJLabel(final String label, final int x,
 			final int y) {
 		final JLabel jlabel = new JLabel(label);

@@ -35,6 +35,6 @@ public class UserBLL {
 	
 	private UserBLL() {
 		super();
-		dao = new UserDAO();
+		this.dao = new UserDAO();
 	}
 }

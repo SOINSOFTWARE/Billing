@@ -20,19 +20,17 @@ public class Configuration implements Serializable {
 
 	private String name;
 
-	private long from;
+	private long numberfrom;
 
-	private long to;
+	private long numberto;
 
-	private long current;
+	private long numbercurrent;
 
 	private Date creation;
 
 	private Date updated;
 
 	private boolean enabled;
-
-	private Set<Receipt> receipts = new HashSet<Receipt>(0);
 
 	private Set<Itemconcept> itemconcepts = new HashSet<Itemconcept>(0);
 
@@ -41,31 +39,31 @@ public class Configuration implements Serializable {
 	}
 
 	public Configuration(final Company company, final String name,
-			final long from, final long to, final long current,
-			final Date creation, final Date updated, final boolean enabled) {
+			final long numberfrom, final long numberto,
+			final long numbercurrent, final Date creation, final Date updated,
+			final boolean enabled) {
 		this.company = company;
 		this.name = name;
-		this.from = from;
-		this.to = to;
-		this.current = current;
+		this.numberfrom = numberfrom;
+		this.numberto = numberto;
+		this.numbercurrent = numbercurrent;
 		this.creation = creation;
 		this.updated = updated;
 		this.enabled = enabled;
 	}
 
 	public Configuration(final Company company, final String name,
-			final long from, final long to, final long current,
-			final Date creation, final Date updated, final boolean enabled,
-			final Set<Receipt> receipts, final Set<Itemconcept> itemconcepts) {
+			final long numberfrom, final long numberto,
+			final long numbercurrent, final Date creation, final Date updated,
+			final boolean enabled, final Set<Itemconcept> itemconcepts) {
 		this.company = company;
 		this.name = name;
-		this.from = from;
-		this.to = to;
-		this.current = current;
+		this.numberfrom = numberfrom;
+		this.numberto = numberto;
+		this.numbercurrent = numbercurrent;
 		this.creation = creation;
 		this.updated = updated;
 		this.enabled = enabled;
-		this.receipts = receipts;
 		this.itemconcepts = itemconcepts;
 	}
 
@@ -93,28 +91,28 @@ public class Configuration implements Serializable {
 		this.name = name;
 	}
 
-	public long getFrom() {
-		return this.from;
+	public long getNumberfrom() {
+		return this.numberfrom;
 	}
 
-	public void setFrom(final long from) {
-		this.from = from;
+	public void setNumberfrom(final long numberfrom) {
+		this.numberfrom = numberfrom;
 	}
 
-	public long getTo() {
-		return this.to;
+	public long getNumberto() {
+		return this.numberto;
 	}
 
-	public void setTo(final long to) {
-		this.to = to;
+	public void setNumberto(final long numberto) {
+		this.numberto = numberto;
 	}
 
-	public long getCurrent() {
-		return this.current;
+	public long getNumbercurrent() {
+		return this.numbercurrent;
 	}
 
-	public void setCurrent(final long current) {
-		this.current = current;
+	public void setNumbercurrent(final long numbercurrent) {
+		this.numbercurrent = numbercurrent;
 	}
 
 	public Date getCreation() {
@@ -139,14 +137,6 @@ public class Configuration implements Serializable {
 
 	public void setEnabled(final boolean enabled) {
 		this.enabled = enabled;
-	}
-
-	public Set<Receipt> getReceipts() {
-		return this.receipts;
-	}
-
-	public void setReceipts(final Set<Receipt> receipts) {
-		this.receipts = receipts;
 	}
 
 	public Set<Itemconcept> getItemconcepts() {

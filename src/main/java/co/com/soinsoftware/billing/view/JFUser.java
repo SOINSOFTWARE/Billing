@@ -64,6 +64,10 @@ public class JFUser extends JFrame implements ActionListener {
 		final JMenuBar menuBar = new JMBAppMenu(controller);
 		this.setJMenuBar(menuBar);
 	}
+	
+	public void refresh() {
+		this.cleanFields();
+	}
 
 	public void actionPerformed(final ActionEvent evt) {
 		final Object source = evt.getSource();

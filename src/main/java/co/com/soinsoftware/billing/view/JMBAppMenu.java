@@ -31,8 +31,14 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 		this.addMenuNew();
 		this.controller = controller;
 	}
+	
+	public void refresh() {
+		this.controller.getUserFrame().refresh();
+		this.controller.getReceiptFrame().refresh();
+	}
 
 	public void actionPerformed(final ActionEvent evt) {
+		this.refresh();
 		final String actionCommand = evt.getActionCommand();
 		if (actionCommand.equals(MENU_CREATE_USER)) {
 			this.controller.getMainFrame().setVisible(false);

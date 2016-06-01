@@ -2,6 +2,8 @@ package co.com.soinsoftware.billing.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Carlos Rodriguez
@@ -33,6 +35,8 @@ public class Receipt implements Serializable {
 	private Date updated;
 
 	private boolean enabled;
+	
+	private Set<Item> itemSet;
 
 	public Receipt() {
 		super();
@@ -141,5 +145,16 @@ public class Receipt implements Serializable {
 
 	public void setEnabled(final boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public Set<Item> getItemSet() {
+		return itemSet;
+	}
+
+	public void addItemSet(final Item item) {
+		if (this.itemSet == null) {
+			this.itemSet = new HashSet<Item>();
+		}
+		this.itemSet.add(item);
 	}
 }
