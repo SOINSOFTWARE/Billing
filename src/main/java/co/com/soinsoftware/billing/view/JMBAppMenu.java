@@ -29,7 +29,7 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 	private static final String MENU_VIEW = "Ver";
 
 	private static final String MENU_VIEW_RECEIPT = "Ver recibos";
-	
+
 	private static final String MENU_VIEW_USER = "Ver usuarios";
 
 	private MenuController controller;
@@ -45,6 +45,7 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 		this.controller.getUserFrame().refresh();
 		this.controller.getReceiptFrame().refresh();
 		this.controller.getReportFrame().refresh();
+		this.controller.getViewUserFrame().refresh();
 	}
 
 	public void actionPerformed(final ActionEvent evt) {
@@ -53,14 +54,22 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 		if (actionCommand.equals(MENU_CREATE_USER)) {
 			this.controller.getReportFrame().setVisible(false);
 			this.controller.getReceiptFrame().setVisible(false);
+			this.controller.getViewUserFrame().setVisible(false);
 			this.controller.getUserFrame().setVisible(true);
 		} else if (actionCommand.equals(MENU_CREATE_RECEIPT)) {
 			this.controller.getReportFrame().setVisible(false);
 			this.controller.getUserFrame().setVisible(false);
+			this.controller.getViewUserFrame().setVisible(false);
 			this.controller.getReceiptFrame().setVisible(true);
+		} else if (actionCommand.equals(MENU_VIEW_USER)) {
+			this.controller.getUserFrame().setVisible(false);
+			this.controller.getReceiptFrame().setVisible(false);
+			this.controller.getReportFrame().setVisible(false);
+			this.controller.getViewUserFrame().setVisible(true);
 		} else if (actionCommand.equals(MENU_VIEW_RECEIPT)) {
 			this.controller.getUserFrame().setVisible(false);
 			this.controller.getReceiptFrame().setVisible(false);
+			this.controller.getViewUserFrame().setVisible(false);
 			this.controller.getReportFrame().setVisible(true);
 		}
 	}
@@ -84,8 +93,8 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 	private void addMenuReport() {
 		final JMenu menu = new JMenu(MENU_VIEW);
 		menu.setMnemonic(KeyEvent.VK_V);
-		final JMenuItem miViewUser = ViewUtils.createJMenuItem(
-				MENU_VIEW_USER, KeyEvent.VK_R,
+		final JMenuItem miViewUser = ViewUtils.createJMenuItem(MENU_VIEW_USER,
+				KeyEvent.VK_R,
 				KeyStroke.getKeyStroke(KeyEvent.VK_3, ActionEvent.ALT_MASK));
 		final JMenuItem miViewReceipt = ViewUtils.createJMenuItem(
 				MENU_VIEW_RECEIPT, KeyEvent.VK_R,

@@ -150,11 +150,13 @@ public class JDLogin extends JDialog implements ActionListener {
 		final JFReportReceipt mainFrame = new JFReportReceipt(user);
 		final JFUser userFrame = new JFUser(user);
 		final JFReceipt receiptFrame = new JFReceipt(user);
+		final JFViewUser viewUserFrame = new JFViewUser(user);
 		final MenuController menuController = new MenuController(mainFrame,
-				userFrame, receiptFrame);
+				userFrame, receiptFrame, viewUserFrame);
 		mainFrame.addController(menuController);
 		userFrame.addController(menuController);
 		receiptFrame.addController(menuController);
+		viewUserFrame.addController(menuController);
 		mainFrame.setVisible(true);
 	}
 }

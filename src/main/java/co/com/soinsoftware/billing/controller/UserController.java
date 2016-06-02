@@ -40,4 +40,8 @@ public class UserController {
 		}
 		this.userBLL.save(user);
 	}
+	
+	public void saveUser(final User user) {
+		this.userBLL.save(user);
+	}
 }
