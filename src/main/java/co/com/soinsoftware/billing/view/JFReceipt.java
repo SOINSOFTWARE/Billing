@@ -5,10 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -26,10 +23,9 @@ import javax.swing.table.TableColumn;
 import co.com.soinsoftware.billing.controller.MenuController;
 import co.com.soinsoftware.billing.controller.ReceiptController;
 import co.com.soinsoftware.billing.controller.UserController;
-import co.com.soinsoftware.billing.entity.Item;
-import co.com.soinsoftware.billing.entity.Itemconcept;
 import co.com.soinsoftware.billing.entity.Receipt;
 import co.com.soinsoftware.billing.entity.User;
+import co.com.soinsoftware.billing.report.ThreadGenerator;
 
 /**
  * @author Carlos Rodriguez
@@ -266,6 +262,10 @@ public class JFReceipt extends JFrame implements ActionListener {
 				this.receiptController.saveReceipt(this.receipt);
 				ViewUtils.showMessage(this, MSG_PRINT_STARTED, TITLE,
 						JOptionPane.INFORMATION_MESSAGE);
+				final ThreadGenerator generator = new ThreadGenerator(
+						this.receipt);
+				generator.start();
+				this.refresh();
 			}
 		}
 	}
@@ -300,7 +300,8 @@ public class JFReceipt extends JFrame implements ActionListener {
 					+ this.client.getIdentification());
 			this.jlbReceiptClientName.setText(nameBuilder.toString());
 
-			this.jtbReceiptItems = new JTable(this.buildTableData(),
+			this.jtbReceiptItems = new JTable(
+					this.receiptController.buildItemConceptData(this.receipt),
 					COLUMN_NAMES);
 			this.jtbReceiptItems.setFillsViewportHeight(true);
 			this.jtbReceiptItems.setEnabled(false);
@@ -320,34 +321,6 @@ public class JFReceipt extends JFrame implements ActionListener {
 			this.panel.add(this.jspReceiptTable);
 			this.setReceiptFieldsVisibility(true);
 		}
-	}
-
-	private Object[][] buildTableData() {
-		final int itemSize = this.receipt.getItemSet().size();
-		final List<Item> itemList = new ArrayList<Item>(
-				this.receipt.getItemSet());
-		final Object[][] data = new Object[itemSize][2];
-		for (int i = 0; i < itemSize; i++) {
-			final Item item = itemList.get(i);
-			final String name = this.getItemConceptName(item.getId()
-					.getIditemconcept());
-			data[i][0] = name;
-			data[i][1] = item.getValue();
-		}
-		return data;
-	}
-
-	private String getItemConceptName(final int idItemConcept) {
-		String name = "";
-		final Set<Itemconcept> itemConceptSet = this.receipt.getConfiguration()
-				.getItemconcepts();
-		for (final Itemconcept concept : itemConceptSet) {
-			if (concept.getId().equals(idItemConcept)) {
-				name = concept.getName();
-				break;
-			}
-		}
-		return name;
 	}
 
 	private void setReceiptFieldsVisibility(final boolean visible) {

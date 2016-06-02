@@ -1,7 +1,11 @@
 package co.com.soinsoftware.billing.controller;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import co.com.soinsoftware.billing.bll.ConfigurationBLL;
 import co.com.soinsoftware.billing.bll.ItemBLL;
@@ -60,6 +64,44 @@ public class ReceiptController {
 			saved = true;
 		}
 		return saved;
+	}
+
+	public Object[][] buildItemConceptData(final Receipt receipt) {
+		final List<Item> itemList = new ArrayList<Item>(receipt.getItemSet());
+		final int itemSize = receipt.getItemSet().size();
+		final Object[][] data = new Object[itemSize][2];
+		this.fillItemConceptName(receipt, itemList);
+		Collections.sort(itemList);
+		int index = 0;
+		for (final Item item : itemList) {
+			data[index][0] = item.getConceptName();
+			data[index][1] = item.getValue();
+			index++;
+		}
+		return data;
+	}
+
+	private void fillItemConceptName(final Receipt receipt,
+			final List<Item> itemList) {
+		final Set<Itemconcept> itemConceptSet = receipt.getConfiguration()
+				.getItemconcepts();
+		for (final Item item : itemList) {
+			final String name = this.getItemConceptName(item.getId()
+					.getIditemconcept(), itemConceptSet);
+			item.setConceptName(name);
+		}
+	}
+
+	private String getItemConceptName(final int idItemConcept,
+			final Set<Itemconcept> itemConceptSet) {
+		String name = "";
+		for (final Itemconcept concept : itemConceptSet) {
+			if (concept.getId().equals(idItemConcept)) {
+				name = concept.getName();
+				break;
+			}
+		}
+		return name;
 	}
 
 	private void saveConfiguration(final Configuration configuration) {

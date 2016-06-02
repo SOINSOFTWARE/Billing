@@ -9,7 +9,7 @@ import java.util.Date;
  * @since 26/05/2016
  * @version 1.0
  */
-public class Itemconcept implements Serializable {
+public class Itemconcept implements Serializable, Comparable<Itemconcept> {
 
 	private static final long serialVersionUID = 5079622598994961247L;
 
@@ -96,5 +96,11 @@ public class Itemconcept implements Serializable {
 
 	public void setEnabled(final boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	@Override
+	public int compareTo(final Itemconcept other) {
+		final String otherName = other.getName();
+		return this.name.compareToIgnoreCase(otherName);
 	}
 }
