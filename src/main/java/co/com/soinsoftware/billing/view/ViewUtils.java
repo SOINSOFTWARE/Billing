@@ -8,11 +8,13 @@ import java.text.DecimalFormat;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import javax.swing.text.NumberFormatter;
 
 /**
@@ -103,6 +105,16 @@ public class ViewUtils {
 		button.setFont(ViewUtils.VERDANA_BOLD);
 		button.setBounds(x, y, 89, 23);
 		return button;
+	}
+
+	protected static JList<String> createJList(final String toolTip,
+			final String[] data, final int x, final int y) {
+		final JList<String> jlst = new JList<>(data);
+		jlst.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		if (toolTip != null) {
+			jlst.setToolTipText(toolTip);
+		}
+		return jlst;
 	}
 
 	protected static JMenuItem createJMenuItem(final String label,

@@ -1,6 +1,6 @@
 package co.com.soinsoftware.billing.controller;
 
-import co.com.soinsoftware.billing.view.JFMain;
+import co.com.soinsoftware.billing.view.JFReportReceipt;
 import co.com.soinsoftware.billing.view.JFReceipt;
 import co.com.soinsoftware.billing.view.JFUser;
 
@@ -11,22 +11,22 @@ import co.com.soinsoftware.billing.view.JFUser;
  */
 public class MenuController {
 
-	private final JFMain mainFrame;
+	private final JFReportReceipt reportFrame;
 
 	private final JFUser userFrame;
 
 	private final JFReceipt receiptFrame;
 
-	public MenuController(final JFMain mainFrame, final JFUser userFrame,
+	public MenuController(final JFReportReceipt reportFrame, final JFUser userFrame,
 			final JFReceipt receiptFrame) {
 		super();
-		this.mainFrame = mainFrame;
+		this.reportFrame = reportFrame;
 		this.userFrame = userFrame;
 		this.receiptFrame = receiptFrame;
 	}
 
-	public JFMain getMainFrame() {
-		return mainFrame;
+	public JFReportReceipt getReportFrame() {
+		return reportFrame;
 	}
 
 	public JFUser getUserFrame() {

@@ -1,6 +1,7 @@
 package co.com.soinsoftware.billing.controller;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -66,6 +67,23 @@ public class ReceiptController {
 		return saved;
 	}
 
+	public Object[][] buildReceiptData(final List<Receipt> receiptList) {
+		final int itemSize = receiptList.size();
+		final SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
+		final Object[][] data = new Object[itemSize][5];
+		int index = 0;
+		for (final Receipt receipt : receiptList) {
+			final User client = receipt.getUserByIduser();
+			data[index][0] = client.getIdentification();
+			data[index][1] = client.getName() + " " + client.getLastname();
+			data[index][2] = format.format(receipt.getReceiptdate());
+			data[index][3] = receipt.getNumber();
+			data[index][4] = this.getTotalValue(receipt.getItemSet());
+			index++;
+		}
+		return data;
+	}
+
 	public Object[][] buildItemConceptData(final Receipt receipt) {
 		final List<Item> itemList = new ArrayList<Item>(receipt.getItemSet());
 		final int itemSize = receipt.getItemSet().size();
@@ -79,6 +97,15 @@ public class ReceiptController {
 			index++;
 		}
 		return data;
+	}
+
+	public List<Receipt> select(final int year, final int month,
+			final User client) {
+		return this.receiptBLL.select(year, month, client);
+	}
+
+	public Receipt select(final long number) {
+		return this.receiptBLL.select(number);
 	}
 
 	private void fillItemConceptName(final Receipt receipt,
@@ -124,5 +151,13 @@ public class ReceiptController {
 				receipt.addItemSet(item);
 			}
 		}
+	}
+
+	private BigDecimal getTotalValue(final Set<Item> itemSet) {
+		BigDecimal total = new BigDecimal(0);
+		for (final Item item : itemSet) {
+			total = total.add(item.getValue());
+		}
+		return total;
 	}
 }

@@ -82,7 +82,7 @@ public class Generator {
 		nameBuilder.append(" ");
 		nameBuilder.append(client.getLastname().toUpperCase());
 		final String receiptDate = "Fecha: "
-				+ format.format(this.receipt.getDate());
+				+ format.format(this.receipt.getReceiptdate());
 		final String clientId = "Cliente " + client.getIdentification();
 
 		this.report

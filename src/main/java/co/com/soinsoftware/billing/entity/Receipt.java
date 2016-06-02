@@ -10,7 +10,7 @@ import java.util.Set;
  * @since 26/05/2016
  * @version 1.0
  */
-public class Receipt implements Serializable {
+public class Receipt implements Serializable, Comparable<Receipt> {
 
 	private static final long serialVersionUID = -1019948042230110690L;
 
@@ -28,7 +28,7 @@ public class Receipt implements Serializable {
 
 	private long number;
 
-	private Date date;
+	private Date receiptdate;
 
 	private Date creation;
 
@@ -36,7 +36,7 @@ public class Receipt implements Serializable {
 
 	private boolean enabled;
 	
-	private Set<Item> itemSet;
+	private Set<Item> itemSet = new HashSet<>(0);
 
 	public Receipt() {
 		super();
@@ -45,7 +45,7 @@ public class Receipt implements Serializable {
 	public Receipt(final Company company, final Configuration configuration,
 			final User userByIduser, final User userByIdcreatoruser,
 			final User userByIdlastchangeuser, final long number,
-			final Date date, final Date creation, final Date updated,
+			final Date receiptdate, final Date creation, final Date updated,
 			final boolean enabled) {
 		this.company = company;
 		this.configuration = configuration;
@@ -53,10 +53,28 @@ public class Receipt implements Serializable {
 		this.userByIdcreatoruser = userByIdcreatoruser;
 		this.userByIdlastchangeuser = userByIdlastchangeuser;
 		this.number = number;
-		this.date = date;
+		this.receiptdate = receiptdate;
 		this.creation = creation;
 		this.updated = updated;
 		this.enabled = enabled;
+	}
+	
+	public Receipt(final Company company, final Configuration configuration,
+			final User userByIduser, final User userByIdcreatoruser,
+			final User userByIdlastchangeuser, final long number,
+			final Date receiptdate, final Date creation, final Date updated,
+			final boolean enabled, final Set<Item> itemSet) {
+		this.company = company;
+		this.configuration = configuration;
+		this.userByIduser = userByIduser;
+		this.userByIdcreatoruser = userByIdcreatoruser;
+		this.userByIdlastchangeuser = userByIdlastchangeuser;
+		this.number = number;
+		this.receiptdate = receiptdate;
+		this.creation = creation;
+		this.updated = updated;
+		this.enabled = enabled;
+		this.itemSet = itemSet;
 	}
 
 	public Integer getId() {
@@ -115,12 +133,12 @@ public class Receipt implements Serializable {
 		this.number = number;
 	}
 
-	public Date getDate() {
-		return this.date;
+	public Date getReceiptdate() {
+		return this.receiptdate;
 	}
 
-	public void setDate(final Date date) {
-		this.date = date;
+	public void setReceiptdate(final Date receiptdate) {
+		this.receiptdate = receiptdate;
 	}
 
 	public Date getCreation() {
@@ -150,11 +168,21 @@ public class Receipt implements Serializable {
 	public Set<Item> getItemSet() {
 		return itemSet;
 	}
+	
+	public void setItemSet(final Set<Item> itemSet) {
+		this.itemSet = itemSet;
+	}
 
 	public void addItemSet(final Item item) {
 		if (this.itemSet == null) {
 			this.itemSet = new HashSet<Item>();
 		}
 		this.itemSet.add(item);
+	}
+
+	@Override
+	public int compareTo(final Receipt other) {
+		final Date otherReceiptDate = other.getReceiptdate();
+		return this.receiptdate.compareTo(otherReceiptDate) * -1;
 	}
 }

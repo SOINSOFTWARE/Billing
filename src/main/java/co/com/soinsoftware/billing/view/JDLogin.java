@@ -147,7 +147,7 @@ public class JDLogin extends JDialog implements ActionListener {
 	}
 
 	private void createAppFrames(final User user) {
-		final JFMain mainFrame = new JFMain(user);
+		final JFReportReceipt mainFrame = new JFReportReceipt(user);
 		final JFUser userFrame = new JFUser(user);
 		final JFReceipt receiptFrame = new JFReceipt(user);
 		final MenuController menuController = new MenuController(mainFrame,

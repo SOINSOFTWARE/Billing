@@ -26,8 +26,8 @@
         <property name="number" type="long">
             <column name="number" not-null="true" />
         </property>
-        <property name="date" type="timestamp">
-            <column name="date" length="19" not-null="true" />
+        <property name="receiptdate" type="timestamp">
+            <column name="receiptdate" length="19" not-null="true" />
         </property>
         <property name="creation" type="timestamp">
             <column name="creation" length="19" not-null="true" />
@@ -38,5 +38,11 @@
         <property name="enabled" type="boolean">
             <column name="enabled" not-null="true" />
         </property>
+        <set name="itemSet" table="item" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idreceipt" not-null="true" />
+            </key>
+            <one-to-many class="co.com.soinsoftware.billing.entity.Item" />
+        </set>
     </class>
 </hibernate-mapping>
