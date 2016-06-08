@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 
 import javax.swing.UIManager;
 
+import co.com.soinsoftware.billing.dao.SessionController;
 import co.com.soinsoftware.billing.view.JDLogin;
 
 /**
@@ -19,6 +20,7 @@ public class App {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					SessionController.getInstance();
 					UIManager.setLookAndFeel(LOOK_AND_FEEL);
 					final JDLogin login = new JDLogin();
 					login.setVisible(true);

@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 
 /**
  * @author Carlos Rodriguez
@@ -26,42 +23,19 @@ public abstract class AbstractDAO {
 	protected static final String SQL_WHERE = " where ";
 	protected static final String SQL_YEAR_FUNC = " year ";
 
-	private SessionFactory factory;
-	
-	private Session session;
-
-	public Query createQuery(String queryStatement) {
-		final Session session = this.openSession();
-		return session.createQuery(queryStatement.toString());
+	public Query createQuery(final String queryStatement) {
+		final SessionController controller = SessionController.getInstance();
+		final Session session = controller.openSession();
+		return session.createQuery(queryStatement);
 	}
 
-	public void save(Serializable object, boolean isNew) {
-		final Session session = this.openSession();
+	public void save(final Serializable object, final boolean isNew) {
+		final SessionController controller = SessionController.getInstance();
+		final Session session = controller.openSession();
 		if (isNew) {
 			session.save(object);
 		}
 		session.getTransaction().commit();
-	}
-
-	private Session openSession() {
-		final SessionFactory sessionFactory = this.getSessionFactory();
-		if (this.session == null || !this.session.isOpen()) {
-			this.session = sessionFactory.openSession();
-		}
-		final Transaction transaction = this.session.getTransaction();
-		if (!transaction.isActive()) {
-			transaction.begin();
-		}
-		return this.session;
-	}
-
-	@SuppressWarnings("deprecation")
-	private SessionFactory getSessionFactory() {
-		if (this.factory == null) {
-			this.factory = new Configuration().configure()
-					.buildSessionFactory();
-		}
-		return factory;
 	}
 
 	protected abstract String getSelectStatement();

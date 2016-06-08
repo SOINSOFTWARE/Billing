@@ -54,7 +54,7 @@ public class JDLogin extends JDialog implements ActionListener {
 	public JDLogin() {
 		final Dimension screenSize = Toolkit.getDefaultToolkit()
 				.getScreenSize();
-		this.setJMenuBar(this.createMenuBar());
+		//this.setJMenuBar(this.createMenuBar());
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
 		this.setBackground(ViewUtils.GREY);
 		this.setResizable(false);

@@ -156,7 +156,7 @@ public class JFViewUser extends JFrame implements ActionListener {
 	private void searchAction() {
 		final int infoMsg = JOptionPane.INFORMATION_MESSAGE;
 		final String identificationStr = this.jtfSearchIdentification.getText()
-				.replace(".", "");
+				.replace(".", "").replace(",", "");
 		if (!identificationStr.equals("")) {
 			final long identification = Long.parseLong(identificationStr);
 			client = this.userController.selectUser(identification);
@@ -211,7 +211,7 @@ public class JFViewUser extends JFrame implements ActionListener {
 
 	private boolean validateUpdatedClientData() {
 		final String identificationStr = this.jtfIdentification.getText()
-				.replace(".", "");
+				.replace(".", "").replace(",", "");
 		final String name = this.jtfName.getText();
 		final String lastName = this.jtfLastName.getText();
 		return !identificationStr.equals("") && !name.equals("")
@@ -220,7 +220,7 @@ public class JFViewUser extends JFrame implements ActionListener {
 
 	private void updateClientData() {
 		final String identificationStr = this.jtfIdentification.getText()
-				.replace(".", "");
+				.replace(".", "").replace(",", "");
 		final String name = this.jtfName.getText();
 		final String lastName = this.jtfLastName.getText();
 		final Date currentDate = new Date();

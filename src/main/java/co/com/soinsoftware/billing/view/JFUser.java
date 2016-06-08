@@ -64,7 +64,7 @@ public class JFUser extends JFrame implements ActionListener {
 		final JMenuBar menuBar = new JMBAppMenu(controller);
 		this.setJMenuBar(menuBar);
 	}
-	
+
 	public void refresh() {
 		this.cleanFields();
 	}
@@ -127,7 +127,7 @@ public class JFUser extends JFrame implements ActionListener {
 		final int errorMsg = JOptionPane.ERROR_MESSAGE;
 		if (validateFields()) {
 			final String identificationStr = this.jtfIdentification.getText()
-					.replace(".", "");
+					.replace(".", "").replace(",", "");
 			final long identification = Long.parseLong(identificationStr);
 			if (!this.controller.isExistingUser(identification)) {
 				final String name = this.jtfName.getText();

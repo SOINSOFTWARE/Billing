@@ -34,10 +34,21 @@ public class Generator {
 
 	private final JasperReportBuilder report;
 
+	private final StyleBuilder styleBold;
+
+	private final StyleBuilder styleNormal;
+
 	public Generator(final Receipt receipt) {
 		super();
 		this.receipt = receipt;
 		this.report = DynamicReports.report();
+		this.styleBold = this
+				.getNewStyle()
+				.bold()
+				.setTextAlignment(HorizontalTextAlignment.CENTER,
+						VerticalTextAlignment.TOP);
+		this.styleNormal = this.getNewStyle().setTextAlignment(
+				HorizontalTextAlignment.CENTER, VerticalTextAlignment.TOP);
 	}
 
 	public boolean generate() {
@@ -47,7 +58,9 @@ public class Generator {
 			this.buildPageHeaderSection();
 			this.buildDetailSection();
 			this.setDataSource();
+			System.out.println("Before show");
 			report.show(false);
+			System.out.println("After show");
 			generated = true;
 		} catch (DRException ex) {
 			System.out.println(ex);
@@ -56,26 +69,18 @@ public class Generator {
 	}
 
 	private void buildTitleSection() {
-		final StyleBuilder style = this
-				.getNewStyle()
-				.bold()
-				.setTextAlignment(HorizontalTextAlignment.CENTER,
-						VerticalTextAlignment.TOP);
+		System.out.println("Adding title section");
 		final Company company = this.receipt.getCompany();
 		this.report.title(
 				cmp.verticalList().add(
-						this.getTextField(company.getName(), style),
-						this.getTextField("NIT: " + company.getNit(), style)),
-				cmp.verticalGap(30));
+						this.getTextField(company.getName(), this.styleBold),
+						this.getTextField("NIT: " + company.getNit(),
+								this.styleBold)), cmp.verticalGap(30));
 	}
 
 	private void buildPageHeaderSection() {
+		System.out.println("Adding page header section");
 		final SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
-		final StyleBuilder style = this
-				.getNewStyle()
-				.bold()
-				.setTextAlignment(HorizontalTextAlignment.CENTER,
-						VerticalTextAlignment.TOP);
 		final User client = this.receipt.getUserByIduser();
 		final StringBuilder nameBuilder = new StringBuilder();
 		nameBuilder.append(client.getName().toUpperCase());
@@ -85,27 +90,18 @@ public class Generator {
 				+ format.format(this.receipt.getReceiptdate());
 		final String clientId = "Cliente " + client.getIdentification();
 
-		this.report
-				.pageHeader(
-						cmp.verticalList()
-								.add(this.getTextField("RECIBO DE CAJA NO "
-										+ this.receipt.getNumber(), style),
-										this.getTextField(receiptDate, style),
-										this.getTextField(clientId, style),
-										this.getTextField(
-												nameBuilder.toString(), style)),
-						cmp.verticalGap(30));
+		this.report.pageHeader(
+				cmp.verticalList()
+						.add(this.getTextField("RECIBO DE CAJA NO "
+								+ this.receipt.getNumber(), this.styleBold),
+								this.getTextField(receiptDate, this.styleBold),
+								this.getTextField(clientId, this.styleBold),
+								this.getTextField(nameBuilder.toString(),
+										this.styleBold)), cmp.verticalGap(30));
 	}
 
 	private void buildDetailSection() {
-		final StyleBuilder styleBold = this
-				.getNewStyle()
-				.bold()
-				.setTextAlignment(HorizontalTextAlignment.CENTER,
-						VerticalTextAlignment.TOP);
-		final StyleBuilder style = this.getNewStyle().setTextAlignment(
-				HorizontalTextAlignment.CENTER, VerticalTextAlignment.TOP);
-
+		System.out.println("Adding detail section");
 		final TextColumnBuilder<String> colConcept = col.column("Concepto",
 				"conceptName", type.stringType());
 		final TextColumnBuilder<BigDecimal> colValue = col.column("Valor",
@@ -116,7 +112,8 @@ public class Generator {
 				.setStyle(styleBold);
 
 		this.report.columns(colConcept, colValue)
-				.setColumnTitleStyle(styleBold).setColumnStyle(style)
+				.setColumnTitleStyle(this.styleBold)
+				.setColumnStyle(this.styleNormal)
 				.subtotalsAtSummary(sumNoteValue).subtotalsAtSummary(sumClass);
 	}
 
@@ -130,6 +127,7 @@ public class Generator {
 	}
 
 	private void setDataSource() {
+		System.out.println("Adding data source");
 		final List<Item> itemList = new ArrayList<Item>(
 				this.receipt.getItemSet());
 		Collections.sort(itemList);

@@ -273,7 +273,7 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 	private void searchClientAction() {
 		final int infoMsg = JOptionPane.INFORMATION_MESSAGE;
 		final String identificationStr = this.jtfIdentification.getText()
-				.replace(".", "");
+				.replace(".", "").replace(",", "");
 		if (!identificationStr.equals("")) {
 			final long identification = Long.parseLong(identificationStr);
 			client = this.userController.selectUser(identification);
@@ -301,7 +301,8 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 	private void searchAction() {
 		this.cleanReceiptData();
 		if (validateYear() && !this.jlsMonth.isSelectionEmpty()) {
-			final String yearStr = this.jtfYear.getText().replace(".", "");
+			final String yearStr = this.jtfYear.getText().replace(".", "")
+					.replace(",", "");
 			final int year = Integer.parseInt(yearStr);
 			final int month = this.jlsMonth.getSelectedIndex() + 1;
 			final List<Receipt> receiptList = this.receiptController.select(
@@ -346,7 +347,8 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 	private boolean validateYear() {
 		boolean isValid = false;
 		final int infoMsg = JOptionPane.INFORMATION_MESSAGE;
-		final String yearStr = this.jtfYear.getText().replace(".", "");
+		final String yearStr = this.jtfYear.getText().replace(".", "")
+				.replace(",", "");
 		if (!yearStr.equals("")) {
 			final long year = Long.parseLong(yearStr);
 			final int currentYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -408,7 +410,7 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 
 	private BigDecimal getTotalMonth(final Object[][] data) {
 		BigDecimal total = new BigDecimal(0);
-		for(int i = 0; i < data.length; i++) {
+		for (int i = 0; i < data.length; i++) {
 			final BigDecimal value = (BigDecimal) data[i][4];
 			total = total.add(value);
 		}

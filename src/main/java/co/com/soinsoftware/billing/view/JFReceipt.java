@@ -212,7 +212,7 @@ public class JFReceipt extends JFrame implements ActionListener {
 	private void searchAction() {
 		final int infoMsg = JOptionPane.INFORMATION_MESSAGE;
 		final String identificationStr = this.jtfIdentification.getText()
-				.replace(".", "");
+				.replace(".", "").replace(",", "");
 		if (!identificationStr.equals("")) {
 			final long identification = Long.parseLong(identificationStr);
 			client = this.userController.selectUser(identification);
@@ -238,7 +238,8 @@ public class JFReceipt extends JFrame implements ActionListener {
 	private void payAction() {
 		final int errorMsg = JOptionPane.ERROR_MESSAGE;
 		if (this.client != null) {
-			final String valueStr = this.jtfValue.getText().replace(".", "");
+			final String valueStr = this.jtfValue.getText().replace(".", "")
+					.replace(",", "");
 			if (!valueStr.equals("")) {
 				this.receipt = this.receiptController.createReceipt(
 						this.loggedUser, this.client,

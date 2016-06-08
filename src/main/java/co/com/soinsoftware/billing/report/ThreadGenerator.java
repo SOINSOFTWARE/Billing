@@ -13,7 +13,9 @@ public class ThreadGenerator extends Thread {
 
 	@Override
 	public void run() {
+		System.out.println("Starting report generation");
 		final Generator generator = new Generator(this.receipt);
 		generator.generate();
+		System.out.println("Finishing report generation");
 	}
 }
