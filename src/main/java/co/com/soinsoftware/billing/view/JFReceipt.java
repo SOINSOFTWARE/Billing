@@ -4,6 +4,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -50,6 +51,8 @@ public class JFReceipt extends JFrame implements ActionListener {
 
 	private static final String MSG_PRINT_STARTED = "El proceso de impresión fue iniciado, en unos segundos su recibo podrá ser impreso.";
 
+	private static final String MSG_VALUE = "El valor ha pagar no puede ser mayor a la deuda del cliente";
+
 	private static final String[] COLUMN_NAMES = { "Concepto", "Valor" };
 
 	private final User loggedUser;
@@ -63,6 +66,8 @@ public class JFReceipt extends JFrame implements ActionListener {
 	private JTextField jtfName;
 
 	private JTextField jtfLastName;
+
+	private JFormattedTextField jtfUserValue;
 
 	private JFormattedTextField jtfValue;
 
@@ -146,7 +151,8 @@ public class JFReceipt extends JFrame implements ActionListener {
 		final JLabel jlbName = ViewUtils.createJLabel("Nombre(s):", 30, 100);
 		final JLabel jlbLastName = ViewUtils.createJLabel("Apellido(s):", 30,
 				160);
-		final JLabel jlbValue = ViewUtils.createJLabel("Valor:", 30, 220);
+		final JLabel jlbUserValue = ViewUtils.createJLabel("Deuda:", 30, 220);
+		final JLabel jlbValue = ViewUtils.createJLabel("Pago:", 30, 280);
 
 		this.jtfIdentification = ViewUtils.createJFormatedTextField(null, 30,
 				60);
@@ -157,23 +163,27 @@ public class JFReceipt extends JFrame implements ActionListener {
 		this.jtfName.setEditable(false);
 		this.jtfLastName = ViewUtils.createJTextField(null, 30, 180);
 		this.jtfLastName.setEditable(false);
-		this.jtfValue = ViewUtils.createJFormatedTextField(null, 30, 240);
+		this.jtfUserValue = ViewUtils.createJFormatedTextField(null, 30, 240);
+		this.jtfUserValue.setEditable(false);
+		this.jtfValue = ViewUtils.createJFormatedTextField(null, 30, 300);
 		this.jtfValue.setEnabled(false);
 		this.jbtClean = ViewUtils.createJButton("Limpiar", KeyEvent.VK_L, 30,
-				270);
+				340);
 		this.jbtClean.addActionListener(this);
-		this.jbtPay = ViewUtils.createJButton("Pagar", KeyEvent.VK_P, 127, 270);
+		this.jbtPay = ViewUtils.createJButton("Pagar", KeyEvent.VK_P, 127, 340);
 		this.jbtPay.addActionListener(this);
 
 		panel.add(jlbTitle);
 		panel.add(jlbIdentification);
 		panel.add(jlbName);
 		panel.add(jlbLastName);
+		panel.add(jlbUserValue);
 		panel.add(jlbValue);
 		panel.add(this.jtfIdentification);
 		panel.add(this.jbtSearch);
 		panel.add(this.jtfName);
 		panel.add(this.jtfLastName);
+		panel.add(this.jtfUserValue);
 		panel.add(this.jtfValue);
 		panel.add(this.jbtClean);
 		panel.add(this.jbtPay);
@@ -236,15 +246,27 @@ public class JFReceipt extends JFrame implements ActionListener {
 	}
 
 	private void payAction() {
+		if (this.doValidations()) {
+			final String valueStr = this.jtfValue.getText().replace(".", "")
+					.replace(",", "");
+			this.receipt = this.receiptController.createReceipt(
+					this.loggedUser, this.client, Integer.parseInt(valueStr));
+			this.fillReceiptData();
+		}
+	}
+
+	private boolean doValidations() {
+		boolean isValid = false;
 		final int errorMsg = JOptionPane.ERROR_MESSAGE;
 		if (this.client != null) {
 			final String valueStr = this.jtfValue.getText().replace(".", "")
 					.replace(",", "");
 			if (!valueStr.equals("")) {
-				this.receipt = this.receiptController.createReceipt(
-						this.loggedUser, this.client,
-						Integer.parseInt(valueStr));
-				this.fillReceiptData();
+				if (this.validateValue()) {
+					isValid = true;
+				} else {
+					ViewUtils.showMessage(this, MSG_VALUE, TITLE, errorMsg);
+				}
 			} else {
 				ViewUtils.showMessage(this, MSG_NO_VALUE_SELECTED, TITLE,
 						errorMsg);
@@ -253,6 +275,7 @@ public class JFReceipt extends JFrame implements ActionListener {
 			ViewUtils
 					.showMessage(this, MSG_NO_CLIENT_SELECTED, TITLE, errorMsg);
 		}
+		return isValid;
 	}
 
 	private void printAction() {
@@ -260,12 +283,13 @@ public class JFReceipt extends JFrame implements ActionListener {
 			final int confirm = ViewUtils.showConfirmDialog(this,
 					MSG_START_PRINT, TITLE);
 			if (confirm == JOptionPane.OK_OPTION) {
+				this.updateUserValue();
 				this.receiptController.saveReceipt(this.receipt);
-				ViewUtils.showMessage(this, MSG_PRINT_STARTED, TITLE,
-						JOptionPane.INFORMATION_MESSAGE);
 				final ThreadGenerator generator = new ThreadGenerator(
 						this.receipt);
 				generator.start();
+				ViewUtils.showMessage(this, MSG_PRINT_STARTED, TITLE,
+						JOptionPane.INFORMATION_MESSAGE);
 				this.refresh();
 			}
 		}
@@ -273,19 +297,21 @@ public class JFReceipt extends JFrame implements ActionListener {
 
 	private void updateTextFields() {
 		if (this.client == null) {
-			this.updateTextFields("", "", "");
+			this.updateTextFields("", "", "", "");
 			this.jtfValue.setEnabled(false);
 		} else {
+			final long value = Math.round(this.client.getValue().doubleValue());
 			this.updateTextFields(this.client.getName(),
-					this.client.getLastname(), "");
+					this.client.getLastname(), String.valueOf(value), "");
 		}
 		this.setReceiptFieldsVisibility(false);
 	}
 
 	private void updateTextFields(final String name, final String lastName,
-			final String value) {
+			final String userValue, final String value) {
 		this.jtfName.setText(name);
 		this.jtfLastName.setText(lastName);
+		this.jtfUserValue.setText(userValue);
 		this.jtfValue.setText(value);
 	}
 
@@ -335,5 +361,22 @@ public class JFReceipt extends JFrame implements ActionListener {
 		if (this.jspReceiptTable != null) {
 			this.jspReceiptTable.setVisible(visible);
 		}
+	}
+
+	private boolean validateValue() {
+		final String valueStr = this.jtfValue.getText().replace(".", "")
+				.replace(",", "");
+		final BigDecimal value = new BigDecimal(valueStr);
+		return value.doubleValue() <= this.client.getValue().doubleValue();
+	}
+	
+	private void updateUserValue() {
+		final String valueStr = this.jtfValue.getText().replace(".", "")
+				.replace(",", "");
+		BigDecimal value = new BigDecimal(valueStr);
+		value = this.client.getValue().subtract(value);
+		this.client.setValue(value);
+		this.client.setUpdated(new Date());
+		this.userController.saveUser(this.client);
 	}
 }

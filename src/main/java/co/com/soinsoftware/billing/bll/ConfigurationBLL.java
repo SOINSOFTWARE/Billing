@@ -14,6 +14,8 @@ public class ConfigurationBLL {
 	
 	private final ConfigurationDAO dao;
 	
+	private Configuration configuration;
+	
 	public static ConfigurationBLL getInstance() {
 		if (instance == null) {
 			instance = new ConfigurationBLL();
@@ -22,11 +24,15 @@ public class ConfigurationBLL {
 	}
 	
 	public Configuration select(final int idCompany) {
-		return this.dao.select(idCompany);
+		if (this.configuration == null) {
+			this.configuration = this.dao.select(idCompany);
+		}
+		return this.configuration;
 	}
 	
 	public void save(final Configuration configuration) {
 		this.dao.save(configuration);
+		this.configuration = configuration;
 	}
 
 	private ConfigurationBLL() {

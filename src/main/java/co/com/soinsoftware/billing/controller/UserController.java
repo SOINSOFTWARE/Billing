@@ -39,7 +39,7 @@ public class UserController {
 		} else {
 			user.setUpdated(currentDate);
 		}
-		this.userBLL.save(user);
+		this.saveUser(user);
 	}
 
 	public void saveUser(final User user) {
