@@ -4,6 +4,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.math.BigDecimal;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -30,9 +31,11 @@ public class JFUser extends JFrame implements ActionListener {
 
 	private static final String TITLE = "Facturador - Usuario";
 
-	private static final String EMPTY_FIELDS = "Por favor complete todos los campos";
+	private static final String MSG_EMPTY_FIELDS = "Por favor complete todos los campos";
 
-	private static final String USER_EXISTS = "Ya existe un usuario registrado con este número de documento";
+	private static final String MSG_VALUE = "La deuda debe ser mayor a 0";
+
+	private static final String MSG_USER_EXISTS = "Ya existe un usuario registrado con este número de documento";
 
 	private final User loggedUser;
 
@@ -43,6 +46,8 @@ public class JFUser extends JFrame implements ActionListener {
 	private JTextField jtfName;
 
 	private JTextField jtfLastName;
+
+	private JFormattedTextField jtfValue;
 
 	private JButton jbtClean;
 
@@ -90,6 +95,7 @@ public class JFUser extends JFrame implements ActionListener {
 		final JLabel jlbName = ViewUtils.createJLabel("Nombre(s):", 30, 100);
 		final JLabel jlbLastName = ViewUtils.createJLabel("Apellido(s):", 30,
 				160);
+		final JLabel jlbValue = ViewUtils.createJLabel("Deuda:", 30, 220);
 
 		this.jtfIdentification = ViewUtils.createJFormatedTextField(null, 30,
 				60);
@@ -97,11 +103,13 @@ public class JFUser extends JFrame implements ActionListener {
 		this.jtfName.setDocument(new JTextFieldLimit(45));
 		this.jtfLastName = ViewUtils.createJTextField(null, 30, 180);
 		this.jtfLastName.setDocument(new JTextFieldLimit(45));
+		this.jtfValue = ViewUtils.createJFormatedTextField(null, 30, 240);
+		this.jtfValue.setText("0");
 
 		this.jbtClean = ViewUtils.createJButton("Limpiar", KeyEvent.VK_L, 30,
-				220);
+				280);
 		this.jbtSave = ViewUtils.createJButton("Guardar", KeyEvent.VK_S, 123,
-				220);
+				280);
 		this.jbtClean.addActionListener(this);
 		this.jbtSave.addActionListener(this);
 
@@ -109,9 +117,11 @@ public class JFUser extends JFrame implements ActionListener {
 		panel.add(jlbIdentification);
 		panel.add(jlbName);
 		panel.add(jlbLastName);
+		panel.add(jlbValue);
 		panel.add(this.jtfIdentification);
 		panel.add(this.jtfName);
 		panel.add(this.jtfLastName);
+		panel.add(this.jtfValue);
 		panel.add(this.jbtClean);
 		panel.add(this.jbtSave);
 		return panel;
@@ -121,33 +131,63 @@ public class JFUser extends JFrame implements ActionListener {
 		this.jtfIdentification.setText("");
 		this.jtfName.setText("");
 		this.jtfLastName.setText("");
+		this.jtfValue.setText("0");
 	}
 
 	private void saveAction() {
-		final int errorMsg = JOptionPane.ERROR_MESSAGE;
-		if (validateFields()) {
+		if (this.doValidations()) {
 			final String identificationStr = this.jtfIdentification.getText()
 					.replace(".", "").replace(",", "");
 			final long identification = Long.parseLong(identificationStr);
-			if (!this.controller.isExistingUser(identification)) {
-				final String name = this.jtfName.getText();
-				final String lastName = this.jtfLastName.getText();
-				this.controller.saveUser(this.loggedUser.getCompany(),
-						identification, name, lastName);
-				ViewUtils.showMessage(this, ViewUtils.MSG_SAVED, TITLE,
-						JOptionPane.INFORMATION_MESSAGE);
-				this.cleanFields();
-			} else {
-				ViewUtils.showMessage(this, USER_EXISTS, TITLE, errorMsg);
-			}
-		} else {
-			ViewUtils.showMessage(this, EMPTY_FIELDS, TITLE, errorMsg);
+			final String name = this.jtfName.getText();
+			final String lastName = this.jtfLastName.getText();
+			final String valueStr = this.jtfValue.getText().replace(".", "")
+					.replace(",", "");
+			final BigDecimal value = new BigDecimal(valueStr);
+			this.controller.saveUser(this.loggedUser.getCompany(),
+					identification, name, lastName, value);
+			ViewUtils.showMessage(this, ViewUtils.MSG_SAVED, TITLE,
+					JOptionPane.INFORMATION_MESSAGE);
+			this.cleanFields();
 		}
 	}
 
+	private boolean doValidations() {
+		final int errorMsg = JOptionPane.ERROR_MESSAGE;
+		boolean isValid = false;
+		if (this.validateFields()) {
+			if (this.validateValue()) {
+				final String identificationStr = this.jtfIdentification
+						.getText().replace(".", "").replace(",", "");
+				final long identification = Long.parseLong(identificationStr);
+				if (!this.controller.isExistingUser(identification)) {
+					isValid = true;
+				} else {
+					ViewUtils.showMessage(this, MSG_USER_EXISTS, TITLE,
+							errorMsg);
+				}
+			} else {
+				ViewUtils.showMessage(this, MSG_VALUE, TITLE, errorMsg);
+			}
+		} else {
+			ViewUtils.showMessage(this, MSG_EMPTY_FIELDS, TITLE, errorMsg);
+		}
+		return isValid;
+	}
+
 	private boolean validateFields() {
+		final String valueStr = this.jtfValue.getText().replace(".", "")
+				.replace(",", "");
 		return !this.jtfIdentification.getText().equals("")
 				&& !this.jtfName.getText().equals("")
-				&& !this.jtfLastName.getText().equals("");
+				&& !this.jtfLastName.getText().equals("")
+				&& !valueStr.equals("");
+	}
+
+	private boolean validateValue() {
+		final String valueStr = this.jtfValue.getText().replace(".", "")
+				.replace(",", "");
+		final BigDecimal value = new BigDecimal(valueStr);
+		return value.doubleValue() > 0;
 	}
 }

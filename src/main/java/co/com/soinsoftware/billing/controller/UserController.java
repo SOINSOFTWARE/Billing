@@ -1,5 +1,6 @@
 package co.com.soinsoftware.billing.controller;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import co.com.soinsoftware.billing.bll.UserBLL;
@@ -19,7 +20,7 @@ public class UserController {
 		super();
 		this.userBLL = UserBLL.getInstance();
 	}
-	
+
 	public boolean isExistingUser(final long identification) {
 		return (this.selectUser(identification) != null);
 	}
@@ -29,18 +30,18 @@ public class UserController {
 	}
 
 	public void saveUser(final Company company, final long identification,
-			final String name, final String lastName) {
+			final String name, final String lastName, final BigDecimal value) {
 		User user = this.selectUser(identification);
 		final Date currentDate = new Date();
 		if (user == null) {
-			user = new User(company, identification, name, lastName,
+			user = new User(company, identification, name, lastName, value,
 					currentDate, currentDate, true);
 		} else {
 			user.setUpdated(currentDate);
 		}
 		this.userBLL.save(user);
 	}
-	
+
 	public void saveUser(final User user) {
 		this.userBLL.save(user);
 	}

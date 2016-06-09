@@ -1,6 +1,7 @@
 package co.com.soinsoftware.billing.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +25,8 @@ public class User implements Serializable {
 
 	private String lastname;
 
+	private BigDecimal value;
+
 	private String login;
 
 	private String password;
@@ -45,22 +48,24 @@ public class User implements Serializable {
 	}
 
 	public User(final Company company, final long identification,
-			final String name, final String lastname, final Date creation,
-			final Date updated, final boolean enabled) {
+			final String name, final String lastname, final BigDecimal value,
+			final Date creation, final Date updated, final boolean enabled) {
 		super();
 		this.company = company;
 		this.identification = identification;
 		this.name = name;
 		this.lastname = lastname;
+		this.value = value;
 		this.creation = creation;
 		this.updated = updated;
 		this.enabled = enabled;
 	}
 
 	public User(final Company company, final long identification,
-			final String name, final String lastname, final String login,
-			final String password, final Date creation, final Date updated,
-			final boolean enabled, final Set<Receipt> receiptsForIduser,
+			final String name, final String lastname, final BigDecimal value,
+			final String login, final String password, final Date creation,
+			final Date updated, final boolean enabled,
+			final Set<Receipt> receiptsForIduser,
 			final Set<Receipt> receiptsForIdcreatoruser,
 			final Set<Receipt> receiptsForIdlastchangeuser) {
 		super();
@@ -68,6 +73,7 @@ public class User implements Serializable {
 		this.identification = identification;
 		this.name = name;
 		this.lastname = lastname;
+		this.value = value;
 		this.login = login;
 		this.password = password;
 		this.creation = creation;
@@ -116,6 +122,14 @@ public class User implements Serializable {
 
 	public void setLastname(final String lastname) {
 		this.lastname = lastname;
+	}
+
+	public BigDecimal getValue() {
+		return value;
+	}
+
+	public void setValue(BigDecimal value) {
+		this.value = value;
 	}
 
 	public String getLogin() {

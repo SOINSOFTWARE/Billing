@@ -20,6 +20,9 @@
         <property name="lastname" type="string">
             <column name="lastname" length="45" not-null="true" />
         </property>
+        <property name="value" type="big_decimal">
+            <column name="value" precision="16" not-null="true" />
+        </property>
         <property name="login" type="string">
             <column name="login" length="10" />
         </property>

@@ -4,6 +4,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.swing.JButton;
@@ -39,6 +40,8 @@ public class JFViewUser extends JFrame implements ActionListener {
 
 	private static final String MSG_EMPTY_FIELDS = "Debe completar todos los campos para poder actualizar";
 
+	private static final String MSG_VALUE = "La deuda no puede ser disminuida en este modulo";
+
 	private final User loggedUser;
 
 	private final UserController userController;
@@ -60,6 +63,10 @@ public class JFViewUser extends JFrame implements ActionListener {
 	private JLabel jlbLastName;
 
 	private JTextField jtfLastName;
+
+	private JLabel jlbValue;
+
+	private JFormattedTextField jtfValue;
 
 	private JButton jbtSave;
 
@@ -118,14 +125,17 @@ public class JFViewUser extends JFrame implements ActionListener {
 				40);
 		this.jlbName = ViewUtils.createJLabel("Nombre(s):", 425, 100);
 		this.jlbLastName = ViewUtils.createJLabel("Apellido(s):", 425, 160);
+		this.jlbValue = ViewUtils.createJLabel("Deuda:", 425, 220);
 
 		this.jtfIdentification = ViewUtils.createJFormatedTextField(null, 425,
 				60);
 		this.jtfName = ViewUtils.createJTextField(null, 425, 120);
 		this.jtfLastName = ViewUtils.createJTextField(null, 425, 180);
+		this.jtfValue = ViewUtils.createJFormatedTextField(null, 425, 240);
+		this.jtfValue.setText("0");
 
 		this.jbtSave = ViewUtils.createJButton("Guardar", KeyEvent.VK_G, 525,
-				210);
+				270);
 		this.jbtSave.addActionListener(this);
 
 		panel.add(jlbTitle);
@@ -135,9 +145,11 @@ public class JFViewUser extends JFrame implements ActionListener {
 		panel.add(this.jlbIdentification);
 		panel.add(this.jlbName);
 		panel.add(this.jlbLastName);
+		panel.add(this.jlbValue);
 		panel.add(this.jtfIdentification);
 		panel.add(this.jtfName);
 		panel.add(this.jtfLastName);
+		panel.add(this.jtfValue);
 		panel.add(this.jbtSave);
 		this.setUserFieldsVisibility(false);
 		return panel;
@@ -147,9 +159,11 @@ public class JFViewUser extends JFrame implements ActionListener {
 		this.jlbIdentification.setVisible(visible);
 		this.jlbName.setVisible(visible);
 		this.jlbLastName.setVisible(visible);
+		this.jlbValue.setVisible(visible);
 		this.jtfIdentification.setVisible(visible);
 		this.jtfName.setVisible(visible);
 		this.jtfLastName.setVisible(visible);
+		this.jtfValue.setVisible(visible);
 		this.jbtSave.setVisible(visible);
 	}
 
@@ -174,13 +188,18 @@ public class JFViewUser extends JFrame implements ActionListener {
 	private void saveAction() {
 		if (this.client != null && this.jbtSave.isVisible()) {
 			if (this.validateUpdatedClientData()) {
-				final int confirm = ViewUtils.showConfirmDialog(this,
-						MSG_SAVE_QUESTION, TITLE);
-				if (confirm == JOptionPane.OK_OPTION) {
-					this.updateClientData();
-					this.userController.saveUser(this.client);
-					ViewUtils.showMessage(this, ViewUtils.MSG_SAVED, TITLE,
-							JOptionPane.INFORMATION_MESSAGE);
+				if (this.validateValue()) {
+					final int confirm = ViewUtils.showConfirmDialog(this,
+							MSG_SAVE_QUESTION, TITLE);
+					if (confirm == JOptionPane.OK_OPTION) {
+						this.updateClientData();
+						this.userController.saveUser(this.client);
+						ViewUtils.showMessage(this, ViewUtils.MSG_SAVED, TITLE,
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+				} else {
+					ViewUtils.showMessage(this, MSG_VALUE, TITLE,
+							JOptionPane.ERROR_MESSAGE);
 				}
 			} else {
 				ViewUtils.showMessage(this, MSG_EMPTY_FIELDS, TITLE,
@@ -192,21 +211,24 @@ public class JFViewUser extends JFrame implements ActionListener {
 	private void updateTextFields() {
 		boolean visible = false;
 		if (this.client == null) {
-			this.updateTextFields("", "", "");
+			this.updateTextFields("", "", "", "0");
 		} else {
+			final long value = Math.round(this.client.getValue().doubleValue());
 			this.updateTextFields(
 					String.valueOf(this.client.getIdentification()),
-					this.client.getName(), this.client.getLastname());
+					this.client.getName(), this.client.getLastname(),
+					String.valueOf(value));
 			visible = true;
 		}
 		this.setUserFieldsVisibility(visible);
 	}
 
 	private void updateTextFields(final String identification,
-			final String name, final String lastName) {
+			final String name, final String lastName, final String value) {
 		this.jtfIdentification.setText(identification);
 		this.jtfName.setText(name);
 		this.jtfLastName.setText(lastName);
+		this.jtfValue.setText(value);
 	}
 
 	private boolean validateUpdatedClientData() {
@@ -224,9 +246,20 @@ public class JFViewUser extends JFrame implements ActionListener {
 		final String name = this.jtfName.getText();
 		final String lastName = this.jtfLastName.getText();
 		final Date currentDate = new Date();
+		final String valueStr = this.jtfValue.getText().replace(".", "")
+				.replace(",", "");
+		final BigDecimal value = new BigDecimal(valueStr);
 		this.client.setIdentification(Long.parseLong(identificationStr));
 		this.client.setName(name);
 		this.client.setLastname(lastName);
 		this.client.setUpdated(currentDate);
+		this.client.setValue(value);
+	}
+
+	private boolean validateValue() {
+		final String valueStr = this.jtfValue.getText().replace(".", "")
+				.replace(",", "");
+		final BigDecimal value = new BigDecimal(valueStr);
+		return value.doubleValue() >= this.client.getValue().doubleValue();
 	}
 }
