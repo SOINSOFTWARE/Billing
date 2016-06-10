@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -29,7 +28,7 @@ import co.com.soinsoftware.billing.entity.User;
  * @since 30/05/2016
  * @version 1.0
  */
-public class JDLogin extends JDialog implements ActionListener {
+public class JFLogin extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -51,15 +50,14 @@ public class JDLogin extends JDialog implements ActionListener {
 
 	private JButton jbtCancel;
 
-	public JDLogin() {
+	public JFLogin() {
 		final Dimension screenSize = Toolkit.getDefaultToolkit()
 				.getScreenSize();
-		//this.setJMenuBar(this.createMenuBar());
-		this.setModalityType(ModalityType.APPLICATION_MODAL);
+		// this.setJMenuBar(this.createMenuBar());
 		this.setBackground(ViewUtils.GREY);
 		this.setResizable(false);
 		this.setTitle(TITLE);
-		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setBounds((int) (screenSize.getWidth() / 2 - 240),
 				(int) (screenSize.getHeight() / 2 - 150), 500, 330);
 		final JPanel panel = this.createJpanel();

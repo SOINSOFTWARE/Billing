@@ -43,6 +43,8 @@ public class User implements Serializable {
 
 	private Set<Receipt> receiptsForIdlastchangeuser = new HashSet<Receipt>(0);
 
+	private volatile String fullName;
+
 	public User() {
 		super();
 	}
@@ -59,6 +61,7 @@ public class User implements Serializable {
 		this.creation = creation;
 		this.updated = updated;
 		this.enabled = enabled;
+		this.fullName = this.name + " " + this.lastname;
 	}
 
 	public User(final Company company, final long identification,
@@ -82,6 +85,7 @@ public class User implements Serializable {
 		this.receiptsForIduser = receiptsForIduser;
 		this.receiptsForIdcreatoruser = receiptsForIdcreatoruser;
 		this.receiptsForIdlastchangeuser = receiptsForIdlastchangeuser;
+		this.fullName = this.name + " " + this.lastname;
 	}
 
 	public Integer getId() {
@@ -198,6 +202,14 @@ public class User implements Serializable {
 		this.receiptsForIdlastchangeuser = receiptsForIdlastchangeuser;
 	}
 
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -228,5 +240,9 @@ public class User implements Serializable {
 				+ ", login=" + login + ", password=" + password + ", creation="
 				+ creation + ", updated=" + updated + ", enabled=" + enabled
 				+ ", receipts=" + receiptsForIduser + "]";
+	}
+
+	public void fillNonDbFields() {
+		this.fullName = this.name + " " + this.lastname;
 	}
 }

@@ -29,6 +29,7 @@ import co.com.soinsoftware.billing.controller.UserController;
 import co.com.soinsoftware.billing.entity.Receipt;
 import co.com.soinsoftware.billing.entity.User;
 import co.com.soinsoftware.billing.report.ThreadGenerator;
+import co.com.soinsoftware.billing.util.ItemTableModel;
 
 /**
  * @author Carlos Rodriguez
@@ -58,8 +59,6 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 
 	private static final String[] RECEIPT_COLUMN_NAMES = { "Identificación",
 			"Nombre", "Fecha", "Recibo", "Valor" };
-
-	private static final String[] ITEM_COLUMN_NAMES = { "Concepto", "Valor" };
 
 	private final User loggedUser;
 
@@ -111,9 +110,13 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 
 	private JButton jbtViewReceipt;
 
+	private JButton jbtPrintList;
+
 	private User client;
 
 	private Receipt receipt;
+
+	private List<Receipt> receiptList;
 
 	public JFReportReceipt(final User loggedUser) {
 		super();
@@ -152,6 +155,8 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 			this.searchReceiptAction();
 		} else if (source.equals(this.jbtPrint)) {
 			this.printAction();
+		} else if (source.equals(this.jbtPrintList)) {
+			this.printListAction();
 		}
 	}
 
@@ -215,6 +220,9 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 	}
 
 	private void buildViewReceiptInfo(final JPanel panel) {
+		this.jbtPrintList = ViewUtils.createJButton("Imprimir", KeyEvent.VK_R,
+				1050, 10);
+		this.jbtPrintList.addActionListener(this);
 		this.jlbViewReceiptNumber = ViewUtils.createJLabel("Recibo de caja NO",
 				425, 260);
 		this.jtfReceiptNumber = ViewUtils.createJFormatedTextField(null, 425,
@@ -223,6 +231,7 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 				KeyEvent.VK_D, 621, 280);
 		this.jbtViewReceipt.addActionListener(this);
 
+		panel.add(this.jbtPrintList);
 		panel.add(this.jlbViewReceiptNumber);
 		panel.add(this.jtfReceiptNumber);
 		panel.add(this.jbtViewReceipt);
@@ -248,9 +257,13 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 	}
 
 	private void setViewReceiptFieldsVisibility(final boolean visible) {
+		this.jbtPrintList.setVisible(visible);
 		this.jlbViewReceiptNumber.setVisible(visible);
 		this.jtfReceiptNumber.setVisible(visible);
 		this.jbtViewReceipt.setVisible(visible);
+		if (!visible) {
+			this.receiptList = null;
+		}
 	}
 
 	private void setReceiptFieldsVisibility(final boolean visible) {
@@ -305,10 +318,10 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 					.replace(",", "");
 			final int year = Integer.parseInt(yearStr);
 			final int month = this.jlsMonth.getSelectedIndex() + 1;
-			final List<Receipt> receiptList = this.receiptController.select(
-					year, month, this.client);
-			if (receiptList != null && receiptList.size() > 0) {
-				this.fillReceiptTable(receiptList);
+			this.receiptList = this.receiptController.select(year, month,
+					this.client);
+			if (this.receiptList != null && this.receiptList.size() > 0) {
+				this.fillReceiptTable();
 				this.setViewReceiptFieldsVisibility(true);
 			} else {
 				ViewUtils.showMessage(this, MSG_NO_RECORDS, TITLE,
@@ -337,10 +350,20 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 
 	private void printAction() {
 		if (this.jbtPrint.isVisible() && this.receipt != null) {
-			ViewUtils.showMessage(this, MSG_PRINT_STARTED, TITLE,
-					JOptionPane.INFORMATION_MESSAGE);
 			final ThreadGenerator generator = new ThreadGenerator(this.receipt);
 			generator.start();
+			ViewUtils.showMessage(this, MSG_PRINT_STARTED, TITLE,
+					JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+	private void printListAction() {
+		if (this.jbtPrintList.isVisible() && this.receiptList != null) {
+			final ThreadGenerator generator = new ThreadGenerator(
+					this.receiptList);
+			generator.start();
+			ViewUtils.showMessage(this, MSG_PRINT_STARTED, TITLE,
+					JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
@@ -377,9 +400,9 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 		this.jtfLastName.setText(lastName);
 	}
 
-	private void fillReceiptTable(final List<Receipt> receiptList) {
+	private void fillReceiptTable() {
 		final Object[][] data = this.receiptController
-				.buildReceiptData(receiptList);
+				.buildReceiptData(this.receiptList);
 		this.jtbReceipts = new JTable(data, RECEIPT_COLUMN_NAMES);
 		this.jtbReceipts.setFillsViewportHeight(true);
 		this.jtbReceipts.setEnabled(false);
@@ -419,6 +442,7 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 
 	private void fillReceiptData() {
 		if (this.receipt != null) {
+			this.removePreviousReceiptTable();
 			final User client = this.receipt.getUserByIduser();
 			final SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
 			final StringBuilder nameBuilder = new StringBuilder();
@@ -433,26 +457,38 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 					+ client.getIdentification());
 			this.jlbReceiptClientName.setText(nameBuilder.toString());
 
-			this.jtbReceiptItems = new JTable(
-					this.receiptController.buildItemConceptData(this.receipt),
-					ITEM_COLUMN_NAMES);
+			final Object[][] data = this.receiptController
+					.buildItemConceptData(this.receipt);
+			final ItemTableModel tableModel = new ItemTableModel(data);
+			this.jtbReceiptItems = new JTable(tableModel);
 			this.jtbReceiptItems.setFillsViewportHeight(true);
 			this.jtbReceiptItems.setEnabled(false);
-			for (int i = 0; i < 2; i++) {
-				final TableColumn column = this.jtbReceiptItems
-						.getColumnModel().getColumn(i);
-				column.setResizable(false);
-				if (i == 0) {
-					column.setPreferredWidth(230);
-				} else {
-					column.setPreferredWidth(70);
-				}
-			}
+			this.setTableColumnDimensions();
 
 			this.jspReceiptItemsTable = new JScrollPane(this.jtbReceiptItems);
 			this.jspReceiptItemsTable.setBounds(425, 410, 300, 150);
 			this.panel.add(this.jspReceiptItemsTable);
 			this.setReceiptFieldsVisibility(true);
+		}
+	}
+
+	private void removePreviousReceiptTable() {
+		if (this.jtbReceiptItems != null) {
+			this.panel.remove(this.jspReceiptItemsTable);
+			this.panel.repaint();
+		}
+	}
+
+	private void setTableColumnDimensions() {
+		for (int i = 0; i < 2; i++) {
+			final TableColumn column = this.jtbReceiptItems.getColumnModel()
+					.getColumn(i);
+			column.setResizable(false);
+			if (i == 0) {
+				column.setPreferredWidth(230);
+			} else {
+				column.setPreferredWidth(70);
+			}
 		}
 	}
 

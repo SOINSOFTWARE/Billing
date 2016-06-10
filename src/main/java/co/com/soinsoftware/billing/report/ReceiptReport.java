@@ -28,7 +28,7 @@ import co.com.soinsoftware.billing.entity.Item;
 import co.com.soinsoftware.billing.entity.Receipt;
 import co.com.soinsoftware.billing.entity.User;
 
-public class Generator {
+public class ReceiptReport {
 
 	private final Receipt receipt;
 
@@ -38,7 +38,7 @@ public class Generator {
 
 	private final StyleBuilder styleNormal;
 
-	public Generator(final Receipt receipt) {
+	public ReceiptReport(final Receipt receipt) {
 		super();
 		this.receipt = receipt;
 		this.report = DynamicReports.report();

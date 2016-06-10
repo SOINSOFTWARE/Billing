@@ -27,12 +27,17 @@ public class ReceiptBLL {
 		}
 		return instance;
 	}
-	
+
 	public Receipt select(final long number) {
-		return this.dao.select(number);
+		final Receipt receipt = this.dao.select(number);
+		if (receipt != null) {
+			receipt.fillNonDbFields();
+		}
+		return receipt;
 	}
-	
-	public List<Receipt> select(final int year, final int month, final User client) {
+
+	public List<Receipt> select(final int year, final int month,
+			final User client) {
 		Set<Receipt> receiptSet = new HashSet<>();
 		if (client == null) {
 			receiptSet = this.dao.select(year, month);
@@ -50,13 +55,20 @@ public class ReceiptBLL {
 		super();
 		this.dao = new ReceiptDAO();
 	}
-	
+
 	private List<Receipt> sortedReceiptList(final Set<Receipt> receiptSet) {
 		List<Receipt> receiptList = new ArrayList<>();
 		if (receiptSet != null) {
 			receiptList = new ArrayList<>(receiptSet);
+			this.fillNonDbFields(receiptList);
 			Collections.sort(receiptList);
 		}
 		return receiptList;
+	}
+
+	private void fillNonDbFields(final List<Receipt> receiptList) {
+		for (final Receipt receipt : receiptList) {
+			receipt.fillNonDbFields();
+		}
 	}
 }

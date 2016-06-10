@@ -56,7 +56,7 @@ public class ViewUtils {
 		final JLabel jlabel = new JLabel(label);
 		jlabel.setForeground(Color.BLACK);
 		jlabel.setFont(ViewUtils.VERDANA_BOLD);
-		jlabel.setBounds(x, y, 186, 20);
+		jlabel.setBounds(x, y, 300, 20);
 		return jlabel;
 	}
 

@@ -5,7 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.UIManager;
 
 import co.com.soinsoftware.billing.dao.SessionController;
-import co.com.soinsoftware.billing.view.JDLogin;
+import co.com.soinsoftware.billing.view.JFLogin;
 
 /**
  * @author Carlos Rodriguez
@@ -22,7 +22,7 @@ public class App {
 				try {
 					SessionController.getInstance();
 					UIManager.setLookAndFeel(LOOK_AND_FEEL);
-					final JDLogin login = new JDLogin();
+					final JFLogin login = new JFLogin();
 					login.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();

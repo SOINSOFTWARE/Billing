@@ -1,6 +1,8 @@
 package co.com.soinsoftware.billing.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +15,9 @@ import java.util.Set;
 public class Receipt implements Serializable, Comparable<Receipt> {
 
 	private static final long serialVersionUID = -1019948042230110690L;
+
+	private static final SimpleDateFormat FORMAT = new SimpleDateFormat(
+			"dd-MMM-yyyy");
 
 	private Integer id;
 
@@ -35,7 +40,11 @@ public class Receipt implements Serializable, Comparable<Receipt> {
 	private Date updated;
 
 	private boolean enabled;
-	
+
+	private volatile String formatedReceiptDate;
+
+	private volatile BigDecimal value;
+
 	private Set<Item> itemSet = new HashSet<>(0);
 
 	public Receipt() {
@@ -57,8 +66,10 @@ public class Receipt implements Serializable, Comparable<Receipt> {
 		this.creation = creation;
 		this.updated = updated;
 		this.enabled = enabled;
+		this.setValue(new BigDecimal(0));
+		this.setFormatedReceiptDate(FORMAT.format(receiptdate));
 	}
-	
+
 	public Receipt(final Company company, final Configuration configuration,
 			final User userByIduser, final User userByIdcreatoruser,
 			final User userByIdlastchangeuser, final long number,
@@ -75,6 +86,8 @@ public class Receipt implements Serializable, Comparable<Receipt> {
 		this.updated = updated;
 		this.enabled = enabled;
 		this.itemSet = itemSet;
+		this.setValue(this.getTotalValue());
+		this.setFormatedReceiptDate(FORMAT.format(receiptdate));
 	}
 
 	public Integer getId() {
@@ -168,7 +181,7 @@ public class Receipt implements Serializable, Comparable<Receipt> {
 	public Set<Item> getItemSet() {
 		return itemSet;
 	}
-	
+
 	public void setItemSet(final Set<Item> itemSet) {
 		this.itemSet = itemSet;
 	}
@@ -180,9 +193,40 @@ public class Receipt implements Serializable, Comparable<Receipt> {
 		this.itemSet.add(item);
 	}
 
+	public BigDecimal getValue() {
+		return value;
+	}
+
+	public void setValue(BigDecimal value) {
+		this.value = value;
+	}
+
+	public String getFormatedReceiptDate() {
+		return formatedReceiptDate;
+	}
+
+	public void setFormatedReceiptDate(String formatedReceiptDate) {
+		this.formatedReceiptDate = formatedReceiptDate;
+	}
+
 	@Override
 	public int compareTo(final Receipt other) {
 		final Date otherReceiptDate = other.getReceiptdate();
 		return this.receiptdate.compareTo(otherReceiptDate) * -1;
+	}
+
+	public void fillNonDbFields() {
+		this.setValue(this.getTotalValue());
+		this.setFormatedReceiptDate(FORMAT.format(receiptdate));
+	}
+
+	private BigDecimal getTotalValue() {
+		BigDecimal total = new BigDecimal(0);
+		if (this.itemSet != null) {
+			for (final Item item : this.itemSet) {
+				total = total.add(item.getValue());
+			}
+		}
+		return total;
 	}
 }

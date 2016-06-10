@@ -1,7 +1,6 @@
 package co.com.soinsoftware.billing.controller;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -69,16 +68,16 @@ public class ReceiptController {
 
 	public Object[][] buildReceiptData(final List<Receipt> receiptList) {
 		final int itemSize = receiptList.size();
-		final SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
 		final Object[][] data = new Object[itemSize][5];
 		int index = 0;
 		for (final Receipt receipt : receiptList) {
 			final User client = receipt.getUserByIduser();
+			client.fillNonDbFields();
 			data[index][0] = client.getIdentification();
-			data[index][1] = client.getName() + " " + client.getLastname();
-			data[index][2] = format.format(receipt.getReceiptdate());
+			data[index][1] = client.getFullName();
+			data[index][2] = receipt.getFormatedReceiptDate();
 			data[index][3] = receipt.getNumber();
-			data[index][4] = this.getTotalValue(receipt.getItemSet());
+			data[index][4] = receipt.getValue();
 			index++;
 		}
 		return data;
@@ -152,13 +151,5 @@ public class ReceiptController {
 				receipt.addItemSet(item);
 			}
 		}
-	}
-
-	private BigDecimal getTotalValue(final Set<Item> itemSet) {
-		BigDecimal total = new BigDecimal(0);
-		for (final Item item : itemSet) {
-			total = total.add(item.getValue());
-		}
-		return total;
 	}
 }
