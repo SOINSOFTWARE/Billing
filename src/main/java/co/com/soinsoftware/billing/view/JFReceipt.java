@@ -24,9 +24,11 @@ import javax.swing.table.TableColumn;
 import co.com.soinsoftware.billing.controller.MenuController;
 import co.com.soinsoftware.billing.controller.ReceiptController;
 import co.com.soinsoftware.billing.controller.UserController;
+import co.com.soinsoftware.billing.entity.Item;
 import co.com.soinsoftware.billing.entity.Receipt;
 import co.com.soinsoftware.billing.entity.User;
 import co.com.soinsoftware.billing.report.ThreadGenerator;
+import co.com.soinsoftware.billing.util.ItemTableModel;
 
 /**
  * @author Carlos Rodriguez
@@ -53,7 +55,7 @@ public class JFReceipt extends JFrame implements ActionListener {
 
 	private static final String MSG_VALUE = "El valor ha pagar no puede ser mayor a la deuda del cliente";
 
-	private static final String[] COLUMN_NAMES = { "Concepto", "Valor" };
+	private static final String MSG_ITEM_VALUE = "La suma del valor de los aportes no es igual al valor pagado";
 
 	private final User loggedUser;
 
@@ -94,6 +96,8 @@ public class JFReceipt extends JFrame implements ActionListener {
 	private JLabel jlbReceiptClientName;
 
 	private JTable jtbReceiptItems;
+
+	private ItemTableModel tableModel;
 
 	private JScrollPane jspReceiptTable;
 
@@ -280,17 +284,23 @@ public class JFReceipt extends JFrame implements ActionListener {
 
 	private void printAction() {
 		if (this.jbtPrint.isVisible()) {
-			final int confirm = ViewUtils.showConfirmDialog(this,
-					MSG_START_PRINT, TITLE);
-			if (confirm == JOptionPane.OK_OPTION) {
-				this.updateUserValue();
-				this.receiptController.saveReceipt(this.receipt);
-				final ThreadGenerator generator = new ThreadGenerator(
-						this.receipt);
-				generator.start();
-				ViewUtils.showMessage(this, MSG_PRINT_STARTED, TITLE,
-						JOptionPane.INFORMATION_MESSAGE);
-				this.refresh();
+			if (this.validateItemValue()) {
+				final int confirm = ViewUtils.showConfirmDialog(this,
+						MSG_START_PRINT, TITLE);
+				if (confirm == JOptionPane.OK_OPTION) {
+					this.updateUserValue();
+					this.updateItemValue();
+					this.receiptController.saveReceipt(this.receipt);
+					final ThreadGenerator generator = new ThreadGenerator(
+							this.receipt);
+					generator.start();
+					ViewUtils.showMessage(this, MSG_PRINT_STARTED, TITLE,
+							JOptionPane.INFORMATION_MESSAGE);
+					this.refresh();
+				}
+			} else {
+				ViewUtils.showMessage(this, MSG_ITEM_VALUE, TITLE,
+						JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
@@ -327,26 +337,29 @@ public class JFReceipt extends JFrame implements ActionListener {
 					+ this.client.getIdentification());
 			this.jlbReceiptClientName.setText(nameBuilder.toString());
 
-			this.jtbReceiptItems = new JTable(
-					this.receiptController.buildItemConceptData(this.receipt),
-					COLUMN_NAMES);
+			this.tableModel = new ItemTableModel(
+					this.receiptController.buildItemConceptData(this.receipt));
+			this.jtbReceiptItems = new JTable(this.tableModel);
 			this.jtbReceiptItems.setFillsViewportHeight(true);
-			this.jtbReceiptItems.setEnabled(false);
-			for (int i = 0; i < 2; i++) {
-				final TableColumn column = this.jtbReceiptItems
-						.getColumnModel().getColumn(i);
-				column.setResizable(false);
-				if (i == 0) {
-					column.setPreferredWidth(230);
-				} else {
-					column.setPreferredWidth(70);
-				}
-			}
+			this.setTableColumnDimensions();
 
 			this.jspReceiptTable = new JScrollPane(this.jtbReceiptItems);
 			this.jspReceiptTable.setBounds(625, 240, 300, 200);
 			this.panel.add(this.jspReceiptTable);
 			this.setReceiptFieldsVisibility(true);
+		}
+	}
+
+	private void setTableColumnDimensions() {
+		for (int i = 0; i < 2; i++) {
+			final TableColumn column = this.jtbReceiptItems.getColumnModel()
+					.getColumn(i);
+			column.setResizable(false);
+			if (i == 0) {
+				column.setPreferredWidth(230);
+			} else {
+				column.setPreferredWidth(70);
+			}
 		}
 	}
 
@@ -369,7 +382,7 @@ public class JFReceipt extends JFrame implements ActionListener {
 		final BigDecimal value = new BigDecimal(valueStr);
 		return value.doubleValue() <= this.client.getValue().doubleValue();
 	}
-	
+
 	private void updateUserValue() {
 		final String valueStr = this.jtfValue.getText().replace(".", "")
 				.replace(",", "");
@@ -378,5 +391,31 @@ public class JFReceipt extends JFrame implements ActionListener {
 		this.client.setValue(value);
 		this.client.setUpdated(new Date());
 		this.userController.saveUser(this.client);
+	}
+
+	private boolean validateItemValue() {
+		final String valueStr = this.jtfValue.getText().replace(".", "")
+				.replace(",", "");
+		final BigDecimal value = new BigDecimal(valueStr);
+		BigDecimal itemValue = new BigDecimal(0);
+		final Object[][] data = this.tableModel.getData();
+		for (int i = 0; i < data.length; i++) {
+			final BigDecimal dataValue = (BigDecimal) data[i][1];
+			itemValue = itemValue.add(dataValue);
+		}
+		return value.doubleValue() == itemValue.doubleValue();
+	}
+	private void updateItemValue() {
+		final Object[][] data = this.tableModel.getData();
+		for (int i = 0; i < data.length; i++) {
+			final String concept = (String) data[i][0];
+			final BigDecimal dataValue = (BigDecimal) data[i][1];
+			for (final Item item : this.receipt.getItemSet()) {
+				if (item.getConceptName().equals(concept)) {
+					item.setValue(dataValue);
+					break;
+				}
+			}
+		}
 	}
 }

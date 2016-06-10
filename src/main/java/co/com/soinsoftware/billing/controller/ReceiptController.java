@@ -142,9 +142,10 @@ public class ReceiptController {
 		final Date currentDate = new Date();
 		if (config.getItemconcepts() != null) {
 			for (final Itemconcept itemConcept : config.getItemconcepts()) {
-				double itemVal = (double) value
-						* (itemConcept.getPercentage().doubleValue() / 100);
-				final BigDecimal valBigDec = new BigDecimal(Math.round(itemVal));
+				//double itemVal = (double) value
+						//* (itemConcept.getPercentage().doubleValue() / 100);
+				//final BigDecimal valBigDec = new BigDecimal(Math.round(itemVal));
+				final BigDecimal valBigDec = new BigDecimal(0);
 				final ItemId itemId = new ItemId(0, itemConcept.getId());
 				final Item item = new Item(itemId, valBigDec, currentDate,
 						currentDate, true);
