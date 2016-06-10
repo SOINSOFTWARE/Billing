@@ -405,6 +405,7 @@ public class JFReceipt extends JFrame implements ActionListener {
 		}
 		return value.doubleValue() == itemValue.doubleValue();
 	}
+
 	private void updateItemValue() {
 		final Object[][] data = this.tableModel.getData();
 		for (int i = 0; i < data.length; i++) {
