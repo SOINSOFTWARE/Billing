@@ -194,6 +194,7 @@ public class JFReceipt extends JFrame implements ActionListener {
 		panel.add(this.jbtClean);
 		panel.add(this.jbtPay);
 		this.buildReceiptInfo(panel);
+		ViewUtils.buildSoinSoftwareLabel(this.getSize(), panel);
 		return panel;
 	}
 

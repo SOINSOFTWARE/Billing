@@ -243,6 +243,7 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 		panel.add(this.jbtSearch);
 		this.buildViewReceiptInfo(panel);
 		this.buildReceiptInfo(panel);
+		ViewUtils.buildSoinSoftwareLabel(this.getSize(), panel);
 		return panel;
 	}
 

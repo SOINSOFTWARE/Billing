@@ -152,6 +152,7 @@ public class JFViewUser extends JFrame implements ActionListener {
 		panel.add(this.jtfValue);
 		panel.add(this.jbtSave);
 		this.setUserFieldsVisibility(false);
+		ViewUtils.buildSoinSoftwareLabel(this.getSize(), panel);
 		return panel;
 	}
 

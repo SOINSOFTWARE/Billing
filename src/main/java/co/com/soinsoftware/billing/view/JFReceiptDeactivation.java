@@ -128,6 +128,7 @@ public class JFReceiptDeactivation extends JFrame implements ActionListener {
 		panel.add(this.jtfReceiptNumber);
 		panel.add(this.jbtViewReceipt);
 		this.buildReceiptInfo(panel);
+		ViewUtils.buildSoinSoftwareLabel(this.getSize(), panel);
 		return panel;
 	}
 

@@ -124,6 +124,7 @@ public class JFUser extends JFrame implements ActionListener {
 		panel.add(this.jtfValue);
 		panel.add(this.jbtClean);
 		panel.add(this.jbtSave);
+		ViewUtils.buildSoinSoftwareLabel(this.getSize(), panel);
 		return panel;
 	}
 

@@ -2,7 +2,9 @@ package co.com.soinsoftware.billing.view;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.text.DecimalFormat;
 
 import javax.swing.ButtonGroup;
@@ -12,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -125,7 +128,7 @@ public class ViewUtils {
 		menuItem.setAccelerator(keyStroke);
 		return menuItem;
 	}
-	
+
 	protected static JRadioButton createRadioButton(final String label,
 			final int x, final int y) {
 		final JRadioButton radioButton = new JRadioButton(label);
@@ -133,8 +136,9 @@ public class ViewUtils {
 		radioButton.setBounds(x, y, 100, 23);
 		return radioButton;
 	}
-	
-	protected static ButtonGroup createButtonGroup(final JRadioButton... radioButtons) {
+
+	protected static ButtonGroup createButtonGroup(
+			final JRadioButton... radioButtons) {
 		final ButtonGroup buttonGroup = new ButtonGroup();
 		if (radioButtons != null) {
 			for (int i = 0; i < radioButtons.length; i++) {
@@ -142,6 +146,20 @@ public class ViewUtils {
 			}
 		}
 		return buttonGroup;
+	}
+
+	protected static void buildSoinSoftwareLabel(Dimension dimFrame,
+			final JPanel panel) {
+		int additionalY = 0;
+		if (dimFrame.getHeight() == 0 || dimFrame.getWidth() == 0) {
+			dimFrame = Toolkit.getDefaultToolkit().getScreenSize();
+			additionalY = 60;
+		}
+		final int x = (int) dimFrame.getWidth() - 200;
+		final int y = (int) dimFrame.getHeight() - (50 + additionalY);
+		final JLabel soinLabel = ViewUtils.createJLabel(
+				"SOIN SOFTWARE SAS, 2016", x, y);
+		panel.add(soinLabel);
 	}
 
 	private static NumberFormatter getNumberFormatter() {

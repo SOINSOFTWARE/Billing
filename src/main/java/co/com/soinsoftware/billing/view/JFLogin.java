@@ -51,6 +51,7 @@ public class JFLogin extends JFrame implements ActionListener {
 	private JButton jbtCancel;
 
 	public JFLogin() {
+		this.controller = new LoginController();
 		final Dimension screenSize = Toolkit.getDefaultToolkit()
 				.getScreenSize();
 		// this.setJMenuBar(this.createMenuBar());
@@ -62,7 +63,6 @@ public class JFLogin extends JFrame implements ActionListener {
 				(int) (screenSize.getHeight() / 2 - 150), 500, 330);
 		final JPanel panel = this.createJpanel();
 		this.setContentPane(panel);
-		this.controller = new LoginController();
 	}
 
 	public void actionPerformed(final ActionEvent evt) {
@@ -104,6 +104,7 @@ public class JFLogin extends JFrame implements ActionListener {
 		panel.add(this.jpfPassword);
 		panel.add(this.jbtCancel);
 		panel.add(this.jbtLogin);
+		ViewUtils.buildSoinSoftwareLabel(this.getSize(), panel);
 		return panel;
 	}
 
