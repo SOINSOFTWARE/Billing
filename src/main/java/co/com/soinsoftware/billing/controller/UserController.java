@@ -45,4 +45,8 @@ public class UserController {
 	public void saveUser(final User user) {
 		this.userBLL.save(user);
 	}
+	
+	public BigDecimal selectDebt(final User client) {
+		return this.userBLL.selectDebt(client);
+	}
 }

@@ -1,5 +1,6 @@
 package co.com.soinsoftware.billing.bll;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -37,18 +38,23 @@ public class ReceiptBLL {
 	}
 
 	public List<Receipt> select(final int year, final int month,
-			final User client) {
+			final User client, final boolean enabled) {
 		Set<Receipt> receiptSet = new HashSet<>();
 		if (client == null) {
-			receiptSet = this.dao.select(year, month);
+			receiptSet = this.dao.select(year, month, enabled);
 		} else {
-			receiptSet = this.dao.select(year, month, client.getId());
+			receiptSet = this.dao.select(year, month, client.getId(), enabled);
 		}
 		return this.sortedReceiptList(receiptSet);
 	}
 
 	public void save(final Receipt receipt) {
 		this.dao.save(receipt);
+	}
+
+	public BigDecimal selectTotal(final User client) {
+		final Integer idUser = (client == null) ? null : client.getId();
+		return this.dao.selectTotal(idUser);
 	}
 
 	private ReceiptBLL() {

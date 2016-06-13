@@ -1,5 +1,7 @@
 package co.com.soinsoftware.billing.bll;
 
+import java.math.BigDecimal;
+
 import co.com.soinsoftware.billing.dao.UserDAO;
 import co.com.soinsoftware.billing.entity.User;
 
@@ -31,6 +33,11 @@ public class UserBLL {
 	
 	public void save(final User user) {
 		this.dao.save(user);
+	}
+	
+	public BigDecimal selectDebt(final User client) {
+		final Integer idUser = (client == null) ? null : client.getId();
+		return this.dao.selectDebt(idUser);
 	}
 	
 	private UserBLL() {

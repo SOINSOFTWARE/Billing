@@ -5,9 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -83,6 +85,10 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 	private JScrollPane jspReceiptsTable;
 
 	private JLabel jlbTotalMonth;
+
+	private JLabel jlbTotal;
+
+	private JLabel jlbDebt;
 
 	private JButton jbtSearchUser;
 
@@ -224,11 +230,11 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 				1050, 10);
 		this.jbtPrintList.addActionListener(this);
 		this.jlbViewReceiptNumber = ViewUtils.createJLabel("Recibo de caja NO",
-				425, 260);
+				425, 270);
 		this.jtfReceiptNumber = ViewUtils.createJFormatedTextField(null, 425,
-				280);
+				290);
 		this.jbtViewReceipt = ViewUtils.createJButton("Ver recibo",
-				KeyEvent.VK_D, 621, 280);
+				KeyEvent.VK_D, 621, 290);
 		this.jbtViewReceipt.addActionListener(this);
 
 		panel.add(this.jbtPrintList);
@@ -240,12 +246,12 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 
 	private void buildReceiptInfo(final JPanel panel) {
 		this.jlbReceiptNumber = ViewUtils.createJLabel("RECIBO DE CAJA NO",
-				425, 320);
-		this.jlbReceiptDate = ViewUtils.createJLabel("Fecha: ", 425, 350);
-		this.jlbReceiptClientId = ViewUtils.createJLabel("Cliente", 425, 370);
-		this.jlbReceiptClientName = ViewUtils.createJLabel("Nombre", 425, 390);
+				425, 330);
+		this.jlbReceiptDate = ViewUtils.createJLabel("Fecha: ", 425, 360);
+		this.jlbReceiptClientId = ViewUtils.createJLabel("Cliente", 425, 380);
+		this.jlbReceiptClientName = ViewUtils.createJLabel("Nombre", 425, 400);
 		this.jbtPrint = ViewUtils.createJButton("Imprimir", KeyEvent.VK_I, 425,
-				580);
+				590);
 		this.jbtPrint.addActionListener(this);
 
 		panel.add(jlbReceiptNumber);
@@ -319,7 +325,7 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 			final int year = Integer.parseInt(yearStr);
 			final int month = this.jlsMonth.getSelectedIndex() + 1;
 			this.receiptList = this.receiptController.select(year, month,
-					this.client);
+					this.client, true);
 			if (this.receiptList != null && this.receiptList.size() > 0) {
 				this.fillReceiptTable();
 				this.setViewReceiptFieldsVisibility(true);
@@ -419,16 +425,44 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 
 		this.jspReceiptsTable = new JScrollPane(this.jtbReceipts);
 		this.jspReceiptsTable.setBounds(425, 10, 600, 200);
-		final BigDecimal total = this.getTotalMonth(data);
-		final String totalStr = "Total del mes: $" + total.toString();
+
+		final Locale locale = new Locale("es", "CO");
+		final NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
+		final BigDecimal totalMonth = this.getTotalMonth(data);
+		final String totalMonthStr = "Total pagado en el mes: "
+				+ formatter.format(totalMonth.doubleValue());
 		if (this.jlbTotalMonth == null) {
-			this.jlbTotalMonth = ViewUtils.createJLabel(totalStr, 425, 220);
+			this.jlbTotalMonth = ViewUtils
+					.createJLabel(totalMonthStr, 725, 220);
 		} else {
-			this.jlbTotalMonth.setText(totalStr);
+			this.jlbTotalMonth.setText(totalMonthStr);
 			this.jlbTotalMonth.setVisible(true);
+		}
+
+		final BigDecimal total = this.receiptController
+				.selectTotal(this.client);
+		final String totalStr = "Total pagado: "
+				+ formatter.format(total.doubleValue());
+		if (this.jlbTotal == null) {
+			this.jlbTotal = ViewUtils.createJLabel(totalStr, 425, 220);
+		} else {
+			this.jlbTotal.setText(totalStr);
+			this.jlbTotal.setVisible(true);
+		}
+
+		final BigDecimal debt = this.userController.selectDebt(this.client);
+		final String debtStr = "Total de la deuda: "
+				+ formatter.format(debt.doubleValue());
+		if (this.jlbDebt == null) {
+			this.jlbDebt = ViewUtils.createJLabel(debtStr, 425, 240);
+		} else {
+			this.jlbDebt.setText(debtStr);
+			this.jlbDebt.setVisible(true);
 		}
 		this.panel.add(this.jspReceiptsTable);
 		this.panel.add(this.jlbTotalMonth);
+		this.panel.add(this.jlbTotal);
+		this.panel.add(this.jlbDebt);
 	}
 
 	private BigDecimal getTotalMonth(final Object[][] data) {
@@ -466,7 +500,7 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 			this.setTableColumnDimensions();
 
 			this.jspReceiptItemsTable = new JScrollPane(this.jtbReceiptItems);
-			this.jspReceiptItemsTable.setBounds(425, 410, 300, 150);
+			this.jspReceiptItemsTable.setBounds(425, 420, 300, 150);
 			this.panel.add(this.jspReceiptItemsTable);
 			this.setReceiptFieldsVisibility(true);
 		}
@@ -504,6 +538,8 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 		if (this.jtbReceipts != null) {
 			this.panel.remove(this.jspReceiptsTable);
 			this.jlbTotalMonth.setVisible(false);
+			this.jlbTotal.setVisible(false);
+			this.jlbDebt.setVisible(false);
 			this.panel.revalidate();
 			this.repaint();
 		}

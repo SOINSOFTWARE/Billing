@@ -99,12 +99,16 @@ public class ReceiptController {
 	}
 
 	public List<Receipt> select(final int year, final int month,
-			final User client) {
-		return this.receiptBLL.select(year, month, client);
+			final User client, final boolean enabled) {
+		return this.receiptBLL.select(year, month, client, enabled);
 	}
 
 	public Receipt select(final long number) {
 		return this.receiptBLL.select(number);
+	}
+
+	public BigDecimal selectTotal(final User client) {
+		return this.receiptBLL.selectTotal(client);
 	}
 
 	private void fillItemConceptName(final Receipt receipt,
@@ -141,9 +145,10 @@ public class ReceiptController {
 		final Date currentDate = new Date();
 		if (config.getItemconcepts() != null) {
 			for (final Itemconcept itemConcept : config.getItemconcepts()) {
-				//double itemVal = (double) value
-						//* (itemConcept.getPercentage().doubleValue() / 100);
-				//final BigDecimal valBigDec = new BigDecimal(Math.round(itemVal));
+				// double itemVal = (double) value
+				// * (itemConcept.getPercentage().doubleValue() / 100);
+				// final BigDecimal valBigDec = new
+				// BigDecimal(Math.round(itemVal));
 				final BigDecimal valBigDec = new BigDecimal(0);
 				final ItemId itemId = new ItemId(0, itemConcept.getId());
 				final Item item = new Item(itemId, valBigDec, currentDate,

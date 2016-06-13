@@ -20,6 +20,7 @@ public abstract class AbstractDAO {
 	protected static final String SQL_EQUALS_WITH_PARAM = " = :";
 	protected static final String SQL_FROM = " from ";
 	protected static final String SQL_MONTH_FUNC = " month ";
+	protected static final String SQL_SELECT = " select ";
 	protected static final String SQL_WHERE = " where ";
 	protected static final String SQL_YEAR_FUNC = " year ";
 
