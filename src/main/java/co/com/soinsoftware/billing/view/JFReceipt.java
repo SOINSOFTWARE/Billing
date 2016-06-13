@@ -47,6 +47,8 @@ public class JFReceipt extends JFrame implements ActionListener {
 
 	private static final String MSG_NO_CLIENT_SELECTED = "El pago no puede ser efectuado, debe seleccionar un usuario realizando la busqueda usando el número de identificación";
 
+	private static final String MSG_NO_CONSECUTIVE = "Los consecutivos para las facturas están agotados.";
+
 	private static final String MSG_NO_VALUE_SELECTED = "El pago no puede ser efectuado, debe indicar el valor pagado por el usuario";
 
 	private static final String MSG_START_PRINT = "¿Está seguro que desea imprimir el recibo?, una vez iniciado el proceso el recibo no puede ser modificado.";
@@ -255,7 +257,12 @@ public class JFReceipt extends JFrame implements ActionListener {
 					.replace(",", "");
 			this.receipt = this.receiptController.createReceipt(
 					this.loggedUser, this.client, Integer.parseInt(valueStr));
-			this.fillReceiptData();
+			if (this.receipt != null) {
+				this.fillReceiptData();
+			} else {
+				ViewUtils.showMessage(this, MSG_NO_CONSECUTIVE, TITLE,
+						JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
 

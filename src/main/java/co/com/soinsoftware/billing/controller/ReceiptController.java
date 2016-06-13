@@ -39,28 +39,37 @@ public class ReceiptController {
 
 	public Receipt createReceipt(final User loggedUser, final User client,
 			final int value) {
+		Receipt receipt = null;
 		final Configuration config = this.configBLL.select(client.getCompany()
 				.getId());
-		final Date currentDate = new Date();
-		final Receipt receipt = new Receipt(client.getCompany(), config,
-				client, loggedUser, loggedUser, config.getNumbercurrent(),
-				currentDate, currentDate, currentDate, true);
-		this.createReceiptItems(receipt, config, value);
+		if (config.getNumberto() == 0 || config.getNumberto() >= config.getNumbercurrent()) {
+			final Date currentDate = new Date();
+			receipt = new Receipt(client.getCompany(), config,
+					client, loggedUser, loggedUser, config.getNumbercurrent(),
+					currentDate, currentDate, currentDate, true);
+			this.createReceiptItems(receipt, config, value);
+		}
 		return receipt;
 	}
 
 	public boolean saveReceipt(final Receipt receipt) {
 		boolean saved = false;
+		boolean updateConfig = false;
 		this.receiptBLL.save(receipt);
 		if (receipt.getId() != null && receipt.getId() > 0) {
 			final int idreceipt = receipt.getId();
 			for (final Item item : receipt.getItemSet()) {
-				item.getId().setIdreceipt(idreceipt);
-				this.itemBLL.save(item);
+				if (item.getId().getIdreceipt() == 0) {
+					item.getId().setIdreceipt(idreceipt);
+					this.itemBLL.save(item);
+					updateConfig = true;
+				}
 			}
-			final Configuration config = this.configBLL.select(receipt
-					.getCompany().getId());
-			this.saveConfiguration(config);
+			if (updateConfig) {
+				final Configuration config = this.configBLL.select(receipt
+						.getCompany().getId());
+				this.saveConfiguration(config);
+			}
 			saved = true;
 		}
 		return saved;

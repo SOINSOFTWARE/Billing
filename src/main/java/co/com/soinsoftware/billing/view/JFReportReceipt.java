@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -19,6 +20,7 @@ import javax.swing.JList;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -118,6 +120,10 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 
 	private JButton jbtPrintList;
 
+	private JRadioButton rbtEnabled;
+
+	private JRadioButton rbtDeactivated;
+
 	private User client;
 
 	private Receipt receipt;
@@ -175,11 +181,13 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 		final JLabel jlbTitle = ViewUtils.createJLabel("VER RECIBOS", 30, 10);
 		final JLabel jlbYear = ViewUtils.createJLabel("Año:", 30, 40);
 		final JLabel jlbMonth = ViewUtils.createJLabel("Mes:", 30, 100);
+		final JLabel jlbEnabled = ViewUtils.createJLabel(
+				"Estado de los recibos:", 30, 220);
 		final JLabel jlbIdentification = ViewUtils.createJLabel(
-				"Identificación:", 30, 220);
-		final JLabel jlbName = ViewUtils.createJLabel("Nombre(s):", 30, 280);
+				"Identificación:", 30, 280);
+		final JLabel jlbName = ViewUtils.createJLabel("Nombre(s):", 30, 340);
 		final JLabel jlbLastName = ViewUtils.createJLabel("Apellido(s):", 30,
-				340);
+				400);
 
 		this.jtfYear = ViewUtils.createJFormatedTextField(null, 30, 60);
 		this.jtfYear.setText(String.valueOf(Calendar.getInstance().get(
@@ -190,30 +198,43 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 				Calendar.MONTH));
 		JScrollPane jspMonth = new JScrollPane(this.jlsMonth);
 		jspMonth.setBounds(30, 120, 186, 80);
-		this.jtfIdentification = ViewUtils.createJFormatedTextField(null, 30,
+
+		this.rbtEnabled = ViewUtils.createRadioButton("Activos", 30, 240);
+		this.rbtDeactivated = ViewUtils.createRadioButton("Eliminados", 130,
 				240);
+		final ButtonGroup groupEnabled = ViewUtils.createButtonGroup(
+				rbtEnabled, rbtDeactivated);
+		groupEnabled.clearSelection();
+		rbtEnabled.setSelected(true);
+
+		this.jtfIdentification = ViewUtils.createJFormatedTextField(null, 30,
+				300);
 		this.jbtSearchUser = ViewUtils.createJButton("Buscar", KeyEvent.VK_B,
-				226, 240);
+				226, 300);
 		this.jbtSearchUser.addActionListener(this);
-		this.jtfName = ViewUtils.createJTextField(null, 30, 300);
+		this.jtfName = ViewUtils.createJTextField(null, 30, 360);
 		this.jtfName.setEditable(false);
-		this.jtfLastName = ViewUtils.createJTextField(null, 30, 360);
+		this.jtfLastName = ViewUtils.createJTextField(null, 30, 420);
 		this.jtfLastName.setEditable(false);
+
 		this.jbtClean = ViewUtils.createJButton("Limpiar", KeyEvent.VK_L, 30,
-				390);
-		this.jbtClean.addActionListener(this);
+				450);
 		this.jbtSearch = ViewUtils
-				.createJButton("Ver", KeyEvent.VK_S, 127, 390);
+				.createJButton("Ver", KeyEvent.VK_S, 127, 450);
+		this.jbtClean.addActionListener(this);
 		this.jbtSearch.addActionListener(this);
 
 		panel.add(jlbTitle);
 		panel.add(jlbYear);
 		panel.add(jlbMonth);
+		panel.add(jlbEnabled);
 		panel.add(jlbIdentification);
 		panel.add(jlbName);
 		panel.add(jlbLastName);
 		panel.add(this.jtfYear);
 		panel.add(jspMonth);
+		panel.add(this.rbtEnabled);
+		panel.add(this.rbtDeactivated);
 		panel.add(this.jtfIdentification);
 		panel.add(this.jbtSearchUser);
 		panel.add(this.jtfName);
@@ -314,6 +335,7 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 		this.jtfYear.setText(String.valueOf(calendar.get(Calendar.YEAR)));
 		this.jlsMonth.setSelectedIndex(calendar.get(Calendar.MONTH));
 		this.jtfIdentification.setText("");
+		this.rbtEnabled.setSelected(true);
 		this.cleanReceiptData();
 	}
 
@@ -324,8 +346,9 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 					.replace(",", "");
 			final int year = Integer.parseInt(yearStr);
 			final int month = this.jlsMonth.getSelectedIndex() + 1;
+			final boolean enabled = this.rbtEnabled.isSelected();
 			this.receiptList = this.receiptController.select(year, month,
-					this.client, true);
+					this.client, enabled);
 			if (this.receiptList != null && this.receiptList.size() > 0) {
 				this.fillReceiptTable();
 				this.setViewReceiptFieldsVisibility(true);
@@ -429,7 +452,7 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 		final Locale locale = new Locale("es", "CO");
 		final NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
 		final BigDecimal totalMonth = this.getTotalMonth(data);
-		final String totalMonthStr = "Total pagado en el mes: "
+		final String totalMonthStr = "Total del mes: "
 				+ formatter.format(totalMonth.doubleValue());
 		if (this.jlbTotalMonth == null) {
 			this.jlbTotalMonth = ViewUtils

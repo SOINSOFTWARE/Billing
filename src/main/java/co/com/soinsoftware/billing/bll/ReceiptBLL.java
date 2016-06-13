@@ -33,6 +33,7 @@ public class ReceiptBLL {
 		final Receipt receipt = this.dao.select(number);
 		if (receipt != null) {
 			receipt.fillNonDbFields();
+			receipt.getUserByIduser().fillNonDbFields();
 		}
 		return receipt;
 	}
@@ -54,7 +55,8 @@ public class ReceiptBLL {
 
 	public BigDecimal selectTotal(final User client) {
 		final Integer idUser = (client == null) ? null : client.getId();
-		return this.dao.selectTotal(idUser);
+		final BigDecimal total = this.dao.selectTotal(idUser); 
+		return total != null ? total : new BigDecimal(0); 
 	}
 
 	private ReceiptBLL() {

@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.text.DecimalFormat;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -12,6 +13,7 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
@@ -122,6 +124,24 @@ public class ViewUtils {
 		final JMenuItem menuItem = new JMenuItem(label, key);
 		menuItem.setAccelerator(keyStroke);
 		return menuItem;
+	}
+	
+	protected static JRadioButton createRadioButton(final String label,
+			final int x, final int y) {
+		final JRadioButton radioButton = new JRadioButton(label);
+		radioButton.setBackground(ViewUtils.GREY);
+		radioButton.setBounds(x, y, 100, 23);
+		return radioButton;
+	}
+	
+	protected static ButtonGroup createButtonGroup(final JRadioButton... radioButtons) {
+		final ButtonGroup buttonGroup = new ButtonGroup();
+		if (radioButtons != null) {
+			for (int i = 0; i < radioButtons.length; i++) {
+				buttonGroup.add(radioButtons[i]);
+			}
+		}
+		return buttonGroup;
 	}
 
 	private static NumberFormatter getNumberFormatter() {
