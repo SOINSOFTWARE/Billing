@@ -22,6 +22,20 @@ import co.com.soinsoftware.billing.entity.User;
 
 public class ReceiptReport {
 
+	private static final String REPORT_NAME = "/billing.jasper";
+
+	private static final String PARAM_CLIENT_ID = "ClientId";
+	private static final String PARAM_CLIENT_NAME = "ClientName";
+	private static final String PARAM_NIT = "NIT";
+	private static final String PARAM_RECEIPT_DATE = "ReceiptDate";
+	private static final String PARAM_RECEIPT_NUMBER = "ReceiptNO";
+	private static final String PARAM_TITLE = "Title";
+
+	private static final String LABEL_CLIENT = "Cliente ";
+	private static final String LABEL_DATE = "Fecha: ";
+	private static final String LABEL_NIT = "NIT: ";
+	private static final String LABEL_RECEIPT_NUMBER = "RECIBO DE CAJA NO ";
+
 	private final Receipt receipt;
 
 	public ReceiptReport(final Receipt receipt) {
@@ -50,7 +64,7 @@ public class ReceiptReport {
 
 	private JasperReport loadJasperReport() throws JRException {
 		final InputStream resourceIS = this.getClass().getResourceAsStream(
-				"/billing.jasper");
+				REPORT_NAME);
 		return (JasperReport) JRLoader.loadObject(resourceIS);
 	}
 
@@ -60,14 +74,15 @@ public class ReceiptReport {
 		final User client = this.receipt.getUserByIduser();
 		client.fillNonDbFields();
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("Title", company.getName());
-		parameters.put("NIT", "NIT: " + company.getNit());
-		parameters.put("ReceiptNO",
-				"RECIBO DE CAJA NO " + this.receipt.getNumber());
-		parameters.put("ReceiptDate",
-				"Fecha: " + format.format(this.receipt.getReceiptdate()));
-		parameters.put("ClientId", "Cliente " + client.getIdentification());
-		parameters.put("ClientName", client.getFullName().toUpperCase());
+		parameters.put(PARAM_TITLE, company.getName());
+		parameters.put(PARAM_NIT, LABEL_NIT + company.getNit());
+		parameters.put(PARAM_RECEIPT_NUMBER, LABEL_RECEIPT_NUMBER
+				+ this.receipt.getNumber());
+		parameters.put(PARAM_RECEIPT_DATE,
+				LABEL_DATE + format.format(this.receipt.getReceiptdate()));
+		parameters.put(PARAM_CLIENT_ID,
+				LABEL_CLIENT + client.getIdentification());
+		parameters.put(PARAM_CLIENT_NAME, client.getFullName().toUpperCase());
 		return parameters;
 	}
 
