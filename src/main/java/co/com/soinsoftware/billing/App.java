@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 
 import javax.swing.UIManager;
 
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import co.com.soinsoftware.billing.dao.SessionController;
 import co.com.soinsoftware.billing.view.JFLogin;
 
@@ -21,6 +22,9 @@ public class App {
 			public void run() {
 				try {
 					SessionController.getInstance();
+					System.out.println("Initializing jasper report context");
+					DefaultJasperReportsContext.getInstance();
+					System.out.println("Finalizing initialization of jasper report context");
 					UIManager.setLookAndFeel(LOOK_AND_FEEL);
 					final JFLogin login = new JFLogin();
 					login.setVisible(true);
