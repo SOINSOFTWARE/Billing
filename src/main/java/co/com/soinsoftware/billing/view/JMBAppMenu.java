@@ -22,9 +22,13 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 
 	private static final String MENU_DEACTIVATE = "Eliminar";
 
+	private static final String MENU_DEACTIVATE_CONCEPT = "Eliminar concepto";
+
 	private static final String MENU_DEACTIVATE_RECEIPT = "Eliminar recibo";
 
 	private static final String MENU_NEW = "Nuevo";
+
+	private static final String MENU_NEW_CONCEPT = "Crear concepto";
 
 	private static final String MENU_NEW_RECEIPT = "Crear recibo";
 
@@ -52,6 +56,8 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 		this.controller.getReportFrame().refresh();
 		this.controller.getViewUserFrame().refresh();
 		this.controller.getDeactivateReceiptFrame().refresh();
+		this.controller.getItemConceptFrame().refresh();
+		this.controller.getDeactivateItemConceptFrame().refresh();
 	}
 
 	public void actionPerformed(final ActionEvent evt) {
@@ -73,6 +79,12 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 		case MENU_DEACTIVATE_RECEIPT:
 			this.showDeactivateReceiptFrame();
 			break;
+		case MENU_NEW_CONCEPT:
+			this.showItemConceptFrame();
+			break;
+		case MENU_DEACTIVATE_CONCEPT:
+			this.showDeactivateItemConceptFrame();
+			break;
 		}
 	}
 
@@ -85,10 +97,15 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 		final JMenuItem miNewReceipt = ViewUtils.createJMenuItem(
 				MENU_NEW_RECEIPT, KeyEvent.VK_R,
 				KeyStroke.getKeyStroke(KeyEvent.VK_2, ActionEvent.ALT_MASK));
+		final JMenuItem miNewConcept = ViewUtils.createJMenuItem(
+				MENU_NEW_CONCEPT, KeyEvent.VK_I,
+				KeyStroke.getKeyStroke(KeyEvent.VK_3, ActionEvent.ALT_MASK));
 		miNewUser.addActionListener(this);
 		miNewReceipt.addActionListener(this);
+		miNewConcept.addActionListener(this);
 		menu.add(miNewUser);
 		menu.add(miNewReceipt);
+		menu.add(miNewConcept);
 		this.add(menu);
 	}
 
@@ -97,10 +114,10 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 		menu.setMnemonic(KeyEvent.VK_V);
 		final JMenuItem miViewUser = ViewUtils.createJMenuItem(MENU_VIEW_USER,
 				KeyEvent.VK_R,
-				KeyStroke.getKeyStroke(KeyEvent.VK_3, ActionEvent.ALT_MASK));
+				KeyStroke.getKeyStroke(KeyEvent.VK_4, ActionEvent.ALT_MASK));
 		final JMenuItem miViewReceipt = ViewUtils.createJMenuItem(
 				MENU_VIEW_RECEIPT, KeyEvent.VK_R,
-				KeyStroke.getKeyStroke(KeyEvent.VK_4, ActionEvent.ALT_MASK));
+				KeyStroke.getKeyStroke(KeyEvent.VK_5, ActionEvent.ALT_MASK));
 		miViewUser.addActionListener(this);
 		miViewReceipt.addActionListener(this);
 		menu.add(miViewUser);
@@ -113,9 +130,14 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 		menu.setMnemonic(KeyEvent.VK_E);
 		final JMenuItem miDeactivateReceipt = ViewUtils.createJMenuItem(
 				MENU_DEACTIVATE_RECEIPT, KeyEvent.VK_E,
-				KeyStroke.getKeyStroke(KeyEvent.VK_5, ActionEvent.ALT_MASK));
+				KeyStroke.getKeyStroke(KeyEvent.VK_6, ActionEvent.ALT_MASK));
+		final JMenuItem miDeactivateConcept = ViewUtils.createJMenuItem(
+				MENU_DEACTIVATE_CONCEPT, KeyEvent.VK_C,
+				KeyStroke.getKeyStroke(KeyEvent.VK_7, ActionEvent.ALT_MASK));
 		miDeactivateReceipt.addActionListener(this);
+		miDeactivateConcept.addActionListener(this);
 		menu.add(miDeactivateReceipt);
+		menu.add(miDeactivateConcept);
 		this.add(menu);
 	}
 
@@ -124,6 +146,8 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 		this.controller.getReceiptFrame().setVisible(false);
 		this.controller.getViewUserFrame().setVisible(false);
 		this.controller.getDeactivateReceiptFrame().setVisible(false);
+		this.controller.getItemConceptFrame().setVisible(false);
+		this.controller.getDeactivateItemConceptFrame().setVisible(false);
 		this.controller.getUserFrame().setVisible(true);
 	}
 
@@ -132,6 +156,8 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 		this.controller.getUserFrame().setVisible(false);
 		this.controller.getViewUserFrame().setVisible(false);
 		this.controller.getDeactivateReceiptFrame().setVisible(false);
+		this.controller.getItemConceptFrame().setVisible(false);
+		this.controller.getDeactivateItemConceptFrame().setVisible(false);
 		this.controller.getReceiptFrame().setVisible(true);
 	}
 
@@ -140,6 +166,8 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 		this.controller.getReceiptFrame().setVisible(false);
 		this.controller.getReportFrame().setVisible(false);
 		this.controller.getDeactivateReceiptFrame().setVisible(false);
+		this.controller.getItemConceptFrame().setVisible(false);
+		this.controller.getDeactivateItemConceptFrame().setVisible(false);
 		this.controller.getViewUserFrame().setVisible(true);
 	}
 
@@ -148,6 +176,8 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 		this.controller.getReceiptFrame().setVisible(false);
 		this.controller.getViewUserFrame().setVisible(false);
 		this.controller.getDeactivateReceiptFrame().setVisible(false);
+		this.controller.getItemConceptFrame().setVisible(false);
+		this.controller.getDeactivateItemConceptFrame().setVisible(false);
 		this.controller.getReportFrame().setVisible(true);
 	}
 
@@ -156,6 +186,28 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 		this.controller.getReceiptFrame().setVisible(false);
 		this.controller.getViewUserFrame().setVisible(false);
 		this.controller.getReportFrame().setVisible(false);
+		this.controller.getItemConceptFrame().setVisible(false);
+		this.controller.getDeactivateItemConceptFrame().setVisible(false);
 		this.controller.getDeactivateReceiptFrame().setVisible(true);
+	}
+
+	private void showItemConceptFrame() {
+		this.controller.getUserFrame().setVisible(false);
+		this.controller.getReceiptFrame().setVisible(false);
+		this.controller.getViewUserFrame().setVisible(false);
+		this.controller.getReportFrame().setVisible(false);
+		this.controller.getDeactivateReceiptFrame().setVisible(false);
+		this.controller.getDeactivateItemConceptFrame().setVisible(false);
+		this.controller.getItemConceptFrame().setVisible(true);
+	}
+
+	private void showDeactivateItemConceptFrame() {
+		this.controller.getUserFrame().setVisible(false);
+		this.controller.getReceiptFrame().setVisible(false);
+		this.controller.getViewUserFrame().setVisible(false);
+		this.controller.getReportFrame().setVisible(false);
+		this.controller.getDeactivateReceiptFrame().setVisible(false);
+		this.controller.getItemConceptFrame().setVisible(false);
+		this.controller.getDeactivateItemConceptFrame().setVisible(true);
 	}
 }

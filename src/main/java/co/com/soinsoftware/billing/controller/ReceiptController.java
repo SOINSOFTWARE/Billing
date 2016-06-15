@@ -42,10 +42,11 @@ public class ReceiptController {
 		Receipt receipt = null;
 		final Configuration config = this.configBLL.select(client.getCompany()
 				.getId());
-		if (config.getNumberto() == 0 || config.getNumberto() >= config.getNumbercurrent()) {
+		if (config.getNumberto() == 0
+				|| config.getNumberto() >= config.getNumbercurrent()) {
 			final Date currentDate = new Date();
-			receipt = new Receipt(client.getCompany(), config,
-					client, loggedUser, loggedUser, config.getNumbercurrent(),
+			receipt = new Receipt(client.getCompany(), config, client,
+					loggedUser, loggedUser, config.getNumbercurrent(),
 					currentDate, currentDate, currentDate, true);
 			this.createReceiptItems(receipt, config, value);
 		}
@@ -154,15 +155,13 @@ public class ReceiptController {
 		final Date currentDate = new Date();
 		if (config.getItemconcepts() != null) {
 			for (final Itemconcept itemConcept : config.getItemconcepts()) {
-				// double itemVal = (double) value
-				// * (itemConcept.getPercentage().doubleValue() / 100);
-				// final BigDecimal valBigDec = new
-				// BigDecimal(Math.round(itemVal));
-				final BigDecimal valBigDec = new BigDecimal(0);
-				final ItemId itemId = new ItemId(0, itemConcept.getId());
-				final Item item = new Item(itemId, valBigDec, currentDate,
-						currentDate, true);
-				receipt.addItemSet(item);
+				if (itemConcept.isEnabled()) {
+					final BigDecimal valBigDec = new BigDecimal(0);
+					final ItemId itemId = new ItemId(0, itemConcept.getId());
+					final Item item = new Item(itemId, valBigDec, currentDate,
+							currentDate, true);
+					receipt.addItemSet(item);
+				}
 			}
 		}
 	}

@@ -152,13 +152,19 @@ public class JFLogin extends JFrame implements ActionListener {
 		final JFViewUser viewUserFrame = new JFViewUser(user);
 		final JFReceiptDeactivation deactivateReceiptFrame = new JFReceiptDeactivation(
 				user);
+		final JFItemConcept itemConceptFrame = new JFItemConcept(user);
+		final JFItemConceptDeactivation deactivateItemConceptFrame = new JFItemConceptDeactivation(
+				user);
 		final MenuController menuController = new MenuController(mainFrame,
-				userFrame, receiptFrame, viewUserFrame, deactivateReceiptFrame);
+				userFrame, receiptFrame, viewUserFrame, deactivateReceiptFrame,
+				itemConceptFrame, deactivateItemConceptFrame);
 		mainFrame.addController(menuController);
 		userFrame.addController(menuController);
 		receiptFrame.addController(menuController);
 		viewUserFrame.addController(menuController);
 		deactivateReceiptFrame.addController(menuController);
+		itemConceptFrame.addController(menuController);
+		deactivateItemConceptFrame.addController(menuController);
 		mainFrame.setVisible(true);
 	}
 }
