@@ -1,3 +1,4 @@
 target\*
 *.class
 target/classes/META-INF/maven/co.com.soinsoftware/billing/pom.properties
+/target/
