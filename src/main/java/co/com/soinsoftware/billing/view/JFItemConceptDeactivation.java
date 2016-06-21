@@ -69,6 +69,7 @@ public class JFItemConceptDeactivation extends JFrame implements ActionListener 
 	}
 
 	public void refresh() {
+		this.jlsItemConcept.setListData(this.getActiveItemConcepts());
 		this.jlsItemConcept.clearSelection();
 	}
 
