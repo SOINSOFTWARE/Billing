@@ -91,6 +91,22 @@ public class ReceiptDAO extends AbstractDAO {
 		return value;
 	}
 
+	public BigDecimal selectVoluntarySave(final Integer idUser) {
+		BigDecimal value = new BigDecimal(0);
+		try {
+			final Query query = this.createQuery(this
+					.getSelectStatementVoluntarySave(idUser));
+			if (idUser != null) {
+				query.setParameter(COLUMN_ID_USER, idUser);
+			}
+			value = (query.list().isEmpty()) ? null : (BigDecimal) query.list()
+					.get(0);
+		} catch (HibernateException ex) {
+			System.out.println(ex);
+		}
+		return value;
+	}
+
 	@Override
 	protected String getSelectStatement() {
 		final StringBuilder query = new StringBuilder();
@@ -156,6 +172,28 @@ public class ReceiptDAO extends AbstractDAO {
 		query.append("Receipt as rcp, Item as itm");
 		query.append(SQL_WHERE);
 		query.append("rcp.id = itm.id.idreceipt");
+		query.append(SQL_AND);
+		query.append("rcp.enabled = 1");
+		if (idUser != null) {
+			query.append(SQL_AND);
+			query.append("rcp.userByIduser.id");
+			query.append(SQL_EQUALS_WITH_PARAM);
+			query.append(COLUMN_ID_USER);
+		}
+
+		return query.toString();
+	}
+
+	private String getSelectStatementVoluntarySave(final Integer idUser) {
+		final StringBuilder query = new StringBuilder();
+		query.append(SQL_SELECT);
+		query.append("sum(itm.value) as val");
+		query.append(SQL_FROM);
+		query.append("Receipt as rcp, Item as itm");
+		query.append(SQL_WHERE);
+		query.append("rcp.id = itm.id.idreceipt");
+		query.append(SQL_AND);
+		query.append("itm.id.iditemconcept = 7");
 		query.append(SQL_AND);
 		query.append("rcp.enabled = 1");
 		if (idUser != null) {

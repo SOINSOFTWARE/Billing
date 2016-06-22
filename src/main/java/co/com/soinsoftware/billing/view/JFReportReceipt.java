@@ -91,6 +91,8 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 	private JLabel jlbTotal;
 
 	private JLabel jlbDebt;
+	
+	private JLabel jlbVoluntarySave;
 
 	private JButton jbtSearchUser;
 
@@ -483,10 +485,21 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 			this.jlbDebt.setText(debtStr);
 			this.jlbDebt.setVisible(true);
 		}
+		
+		final BigDecimal voluntarySave = this.receiptController.selectVoluntarySave(this.client);
+		final String voluntarySaveStr = "Total ahorro voluntario: "
+				+ formatter.format(voluntarySave.doubleValue());
+		if (this.jlbVoluntarySave == null) {
+			this.jlbVoluntarySave = ViewUtils.createJLabel(voluntarySaveStr, 725, 240);
+		} else {
+			this.jlbVoluntarySave.setText(voluntarySaveStr);
+			this.jlbVoluntarySave.setVisible(true);
+		}
 		this.panel.add(this.jspReceiptsTable);
 		this.panel.add(this.jlbTotalMonth);
 		this.panel.add(this.jlbTotal);
 		this.panel.add(this.jlbDebt);
+		this.panel.add(this.jlbVoluntarySave);
 	}
 
 	private BigDecimal getTotalMonth(final Object[][] data) {
@@ -564,6 +577,7 @@ public class JFReportReceipt extends JFrame implements ActionListener {
 			this.jlbTotalMonth.setVisible(false);
 			this.jlbTotal.setVisible(false);
 			this.jlbDebt.setVisible(false);
+			this.jlbVoluntarySave.setVisible(false);
 			this.panel.revalidate();
 			this.repaint();
 		}

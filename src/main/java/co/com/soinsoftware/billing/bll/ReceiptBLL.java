@@ -58,6 +58,12 @@ public class ReceiptBLL {
 		final BigDecimal total = this.dao.selectTotal(idUser); 
 		return total != null ? total : new BigDecimal(0); 
 	}
+	
+	public BigDecimal selectVoluntarySave(final User client) {
+		final Integer idUser = (client == null) ? null : client.getId();
+		final BigDecimal voluntarySave = this.dao.selectVoluntarySave(idUser); 
+		return voluntarySave != null ? voluntarySave : new BigDecimal(0); 
+	}
 
 	private ReceiptBLL() {
 		super();

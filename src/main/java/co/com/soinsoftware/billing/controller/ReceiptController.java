@@ -120,6 +120,10 @@ public class ReceiptController {
 	public BigDecimal selectTotal(final User client) {
 		return this.receiptBLL.selectTotal(client);
 	}
+	
+	public BigDecimal selectVoluntarySave(final User client) {
+		return this.receiptBLL.selectVoluntarySave(client);
+	}
 
 	private void fillItemConceptName(final Receipt receipt,
 			final List<Item> itemList) {

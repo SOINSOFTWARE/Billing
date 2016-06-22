@@ -144,7 +144,9 @@ public class JFItemConceptDeactivation extends JFrame implements ActionListener 
 		if (itemConceptList != null) {
 			itemConceptArray = new String[itemConceptList.size()];
 			for (int i = 0; i < itemConceptList.size(); i++) {
-				itemConceptArray[i] = itemConceptList.get(i).getName();
+				if (itemConceptList.get(i).getId() != 7) {
+					itemConceptArray[i] = itemConceptList.get(i).getName();
+				}
 			}
 		}
 		return itemConceptArray;
