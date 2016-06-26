@@ -73,7 +73,7 @@ public class JFItemConceptDeactivation extends JFrame {
         if (itemConceptList != null) {
             itemConceptArray = new String[itemConceptList.size()];
             for (int i = 0; i < itemConceptList.size(); i++) {
-                if (itemConceptList.get(i).getId() != 7) {
+                if (itemConceptList.get(i).getId() != 1) {
                     itemConceptArray[i] = itemConceptList.get(i).getName();
                 }
             }

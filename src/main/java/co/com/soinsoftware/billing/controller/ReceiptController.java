@@ -159,7 +159,8 @@ public class ReceiptController {
 		final Date currentDate = new Date();
 		if (config.getItemconcepts() != null) {
 			for (final Itemconcept itemConcept : config.getItemconcepts()) {
-				if (itemConcept.isEnabled()) {
+				if (itemConcept.isEnabled()
+						&& (value > 0 || itemConcept.getId().equals(1))) {
 					final BigDecimal valBigDec = new BigDecimal(0);
 					final ItemId itemId = new ItemId(0, itemConcept.getId());
 					final Item item = new Item(itemId, valBigDec, currentDate,

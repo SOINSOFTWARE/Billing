@@ -5,6 +5,17 @@
  */
 package co.com.soinsoftware.billing.view;
 
+import java.awt.GraphicsEnvironment;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+
+import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
+import javax.swing.table.TableColumn;
+
 import co.com.soinsoftware.billing.controller.MenuController;
 import co.com.soinsoftware.billing.controller.ReceiptController;
 import co.com.soinsoftware.billing.controller.UserController;
@@ -13,14 +24,6 @@ import co.com.soinsoftware.billing.entity.Receipt;
 import co.com.soinsoftware.billing.entity.User;
 import co.com.soinsoftware.billing.report.ThreadGenerator;
 import co.com.soinsoftware.billing.util.ItemTableModel;
-import java.awt.GraphicsEnvironment;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.table.TableColumn;
 
 /**
  * @author Carlos Rodriguez
@@ -161,10 +164,13 @@ public class JFReceipt extends JFrame {
         boolean isValid = false;
         final int errorMsg = JOptionPane.ERROR_MESSAGE;
         if (this.client != null) {
-            final String valueStr = this.jtfValue.getText().replace(".", "")
+            final String valueToPayStr = this.jtfValue.getText().replace(".", "")
                     .replace(",", "");
-            if (!valueStr.equals("")) {
-                if (this.validateValue()) {
+            if (!valueToPayStr.equals("")) {
+            	final String debtValueStr = this.jtfUserValue.getText().replace(".", "")
+                        .replace(",", "");
+            	final BigDecimal debtValue = new BigDecimal(debtValueStr);
+                if (this.validateValue() || debtValue.doubleValue() == 0) {
                     isValid = true;
                 } else {
                     ViewUtils.showMessage(this, MSG_VALUE, TITLE, errorMsg);
@@ -186,11 +192,14 @@ public class JFReceipt extends JFrame {
     }
 
     private void updateUserValue() {
-        final String valueStr = this.jtfValue.getText().replace(".", "")
-                .replace(",", "");
-        BigDecimal value = new BigDecimal(valueStr);
-        value = this.client.getValue().subtract(value);
-        this.client.setValue(value);
+    	BigDecimal value = new BigDecimal(0);
+        for (final Item item : this.receipt.getItemSet()) {
+        	if (item.getId().getIditemconcept() != 1) {
+        		value = value.add(item.getValue());
+        	}
+        }
+        final BigDecimal debt = this.client.getValue().subtract(value);
+        this.client.setValue(debt);
         this.client.setUpdated(new Date());
         this.userController.saveUser(this.client);
     }
@@ -220,6 +229,17 @@ public class JFReceipt extends JFrame {
                 }
             }
         }
+        this.removeEmptyItems();
+    }
+    
+    private void removeEmptyItems() {    	
+    	final Iterator<Item> iterator = this.receipt.getItemSet().iterator();
+    	while (iterator.hasNext()) {
+    		final Item item = iterator.next();
+    	    if (item.getValue().doubleValue() == 0) {
+    	        iterator.remove();
+    	    }
+    	}
     }
 
     /**
@@ -569,10 +589,10 @@ public class JFReceipt extends JFrame {
 
     private void jbtPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtPayActionPerformed
         if (this.doValidations()) {
-            final String valueStr = this.jtfValue.getText().replace(".", "")
+        	final String debtValueStr = this.jtfUserValue.getText().replace(".", "")
                     .replace(",", "");
             this.receipt = this.receiptController.createReceipt(
-                    this.loggedUser, this.client, Integer.parseInt(valueStr));
+                    this.loggedUser, this.client, Integer.parseInt(debtValueStr));
             if (this.receipt != null) {
                 this.fillReceiptData();
             } else {
@@ -594,8 +614,8 @@ public class JFReceipt extends JFrame {
                 final int confirm = ViewUtils.showConfirmDialog(this,
                         MSG_START_PRINT, TITLE);
                 if (confirm == JOptionPane.OK_OPTION) {
-                    this.updateUserValue();
-                    this.updateItemValue();
+                	this.updateItemValue();
+                	this.updateUserValue();                    
                     this.receiptController.saveReceipt(this.receipt);
                     final ThreadGenerator generator = new ThreadGenerator(
                             this.receipt);

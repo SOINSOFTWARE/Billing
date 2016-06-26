@@ -225,14 +225,14 @@ public class JFReportReceipt extends JFrame {
         final Locale locale = new Locale("es", "CO");
         final NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
         final BigDecimal totalMonth = this.getTotalMonth(data);
-        final String totalMonthStr = "Total del mes: "
+        final String totalMonthStr = "Total recaudado del mes: "
                 + formatter.format(totalMonth.doubleValue());
         this.jlbTotalMonth.setText(totalMonthStr);
         this.jlbTotalMonth.setVisible(true);
 
         final BigDecimal total = this.receiptController
                 .selectTotal(this.client);
-        final String totalStr = "Total pagado: "
+        final String totalStr = "Total recaudado: "
                 + formatter.format(total.doubleValue());
         this.jlbTotal.setText(totalStr);
         this.jlbTotal.setVisible(true);

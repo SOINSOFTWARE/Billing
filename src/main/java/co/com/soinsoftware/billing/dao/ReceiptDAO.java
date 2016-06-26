@@ -193,7 +193,7 @@ public class ReceiptDAO extends AbstractDAO {
 		query.append(SQL_WHERE);
 		query.append("rcp.id = itm.id.idreceipt");
 		query.append(SQL_AND);
-		query.append("itm.id.iditemconcept = 7");
+		query.append("itm.id.iditemconcept = 1");
 		query.append(SQL_AND);
 		query.append("rcp.enabled = 1");
 		if (idUser != null) {
