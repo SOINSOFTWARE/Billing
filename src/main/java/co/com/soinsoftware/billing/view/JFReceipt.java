@@ -195,7 +195,9 @@ public class JFReceipt extends JFrame {
     private void updateUserValue() {
     	BigDecimal value = new BigDecimal(0);
         for (final Item item : this.receipt.getItemSet()) {
-        	if (item.getId().getIditemconcept() != 1) {
+        	if (item.getId().getIditemconcept() != 1
+        			&& item.getId().getIditemconcept() != 2
+        			&& item.getId().getIditemconcept() != 3) {
         		value = value.add(item.getValue());
         	}
         }

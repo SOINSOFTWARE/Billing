@@ -63,3 +63,4 @@ target/classes/billing.jrxml
 target/classes/receiptList.jasper
 target/classes/receiptList.jrxml
 target/classes/META-INF/maven/co.com.soinsoftware/billing/pom.properties
+*.class

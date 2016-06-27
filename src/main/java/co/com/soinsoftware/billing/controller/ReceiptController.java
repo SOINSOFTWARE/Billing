@@ -128,7 +128,9 @@ public class ReceiptController {
 	public BigDecimal getReturnToDebtValue(final Receipt receipt) {
 		BigDecimal value = new BigDecimal(0);
 		for (final Item item : receipt.getItemSet()) {
-			if (item.getId().getIditemconcept() != 1) {
+			if (item.getId().getIditemconcept() != 1
+					&& item.getId().getIditemconcept() != 2
+            		&& item.getId().getIditemconcept() != 3) {
 				value = value.add(item.getValue());
 			}
 		}
