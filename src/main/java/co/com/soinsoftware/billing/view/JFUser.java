@@ -8,8 +8,11 @@ package co.com.soinsoftware.billing.view;
 import co.com.soinsoftware.billing.controller.MenuController;
 import co.com.soinsoftware.billing.controller.UserController;
 import co.com.soinsoftware.billing.entity.User;
+
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.math.BigDecimal;
+
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -140,7 +143,7 @@ public class JFUser extends JFrame {
         lbImage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/invoice.png")));
         setMinimumSize(new java.awt.Dimension(400, 430));
         setName("jfUser"); // NOI18N
         setPreferredSize(new java.awt.Dimension(400, 430));

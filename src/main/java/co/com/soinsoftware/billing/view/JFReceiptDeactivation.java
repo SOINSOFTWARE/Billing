@@ -6,6 +6,7 @@
 package co.com.soinsoftware.billing.view;
 
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -156,6 +157,7 @@ public class JFReceiptDeactivation extends JFrame {
         lbImage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/invoice.png")));
         setMinimumSize(new java.awt.Dimension(620, 580));
 
         pnTitle.setBackground(new java.awt.Color(255, 255, 255));

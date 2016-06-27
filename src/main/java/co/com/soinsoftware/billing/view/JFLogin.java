@@ -8,7 +8,10 @@ package co.com.soinsoftware.billing.view;
 import co.com.soinsoftware.billing.controller.LoginController;
 import co.com.soinsoftware.billing.controller.MenuController;
 import co.com.soinsoftware.billing.entity.User;
+
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -115,6 +118,7 @@ public class JFLogin extends JFrame {
         lbImage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/invoice.png")));
         setMinimumSize(new java.awt.Dimension(420, 320));
         setName("jfLogin"); // NOI18N
 

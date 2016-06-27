@@ -9,8 +9,11 @@ import co.com.soinsoftware.billing.controller.ItemConceptController;
 import co.com.soinsoftware.billing.controller.MenuController;
 import co.com.soinsoftware.billing.entity.Itemconcept;
 import co.com.soinsoftware.billing.entity.User;
+
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.util.List;
+
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -102,6 +105,7 @@ public class JFItemConcept extends JFrame {
         lbImage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/invoice.png")));
         setMinimumSize(new java.awt.Dimension(510, 360));
         setPreferredSize(new java.awt.Dimension(510, 360));
 

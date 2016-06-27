@@ -12,13 +12,16 @@ import co.com.soinsoftware.billing.entity.Receipt;
 import co.com.soinsoftware.billing.entity.User;
 import co.com.soinsoftware.billing.report.ThreadGenerator;
 import co.com.soinsoftware.billing.util.ItemTableModel;
+
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -354,6 +357,7 @@ public class JFReportReceipt extends JFrame {
         lbImage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/invoice.png")));
         setMinimumSize(new java.awt.Dimension(1070, 690));
         setName("jfReportReceive"); // NOI18N
         setPreferredSize(new java.awt.Dimension(1070, 690));
