@@ -7,6 +7,7 @@ import javax.swing.UIManager;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import co.com.soinsoftware.billing.dao.SessionController;
 import co.com.soinsoftware.billing.view.JFLogin;
+import co.com.soinsoftware.billing.view.JFLogo;
 
 /**
  * @author Carlos Rodriguez
@@ -18,6 +19,8 @@ public class App {
 	private static final String LOOK_AND_FEEL = "com.jtattoo.plaf.luna.LunaLookAndFeel";
 
 	public static void main(String[] args) {
+		final JFLogo logo = new JFLogo();
+		logo.setVisible(true);
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -28,6 +31,7 @@ public class App {
 					UIManager.setLookAndFeel(LOOK_AND_FEEL);
 					final JFLogin login = new JFLogin();
 					login.setVisible(true);
+					logo.setVisible(false);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
