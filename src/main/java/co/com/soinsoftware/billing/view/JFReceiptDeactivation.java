@@ -5,19 +5,22 @@
  */
 package co.com.soinsoftware.billing.view;
 
+import java.awt.GraphicsEnvironment;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
+import javax.swing.table.TableColumn;
+
 import co.com.soinsoftware.billing.controller.MenuController;
 import co.com.soinsoftware.billing.controller.ReceiptController;
 import co.com.soinsoftware.billing.controller.UserController;
 import co.com.soinsoftware.billing.entity.Receipt;
 import co.com.soinsoftware.billing.entity.User;
 import co.com.soinsoftware.billing.util.ItemTableModel;
-import java.awt.GraphicsEnvironment;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.table.TableColumn;
 
 /**
  * @author Carlos Rodriguez
@@ -28,7 +31,7 @@ public class JFReceiptDeactivation extends JFrame {
 
     private static final long serialVersionUID = -8432520949164190295L;
 
-    private static final String TITLE = "Facturador - Eliminar Recibos";
+    private static final String TITLE = "Cooperativo - Eliminar Recibos";
 
     private static final String MSG_CURRENTLY_DEACTIVATED = "El recibo ya fue eliminado";
 
@@ -385,7 +388,9 @@ public class JFReceiptDeactivation extends JFrame {
                 this.receipt.setUserByIdlastchangeuser(this.loggedUser);
                 this.receipt.setUpdated(currentDate);
                 final User client = this.receipt.getUserByIduser();
-                client.setValue(client.getValue().add(this.receipt.getValue()));
+				final BigDecimal returnToDebt = this.receiptController
+						.getReturnToDebtValue(this.receipt);
+				client.setValue(client.getValue().add(returnToDebt));
                 client.setUpdated(currentDate);
                 this.receiptController.saveReceipt(this.receipt);
                 this.userController.saveUser(client);

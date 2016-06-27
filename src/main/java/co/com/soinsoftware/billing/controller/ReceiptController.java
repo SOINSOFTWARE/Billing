@@ -124,6 +124,16 @@ public class ReceiptController {
 	public BigDecimal selectVoluntarySave(final User client) {
 		return this.receiptBLL.selectVoluntarySave(client);
 	}
+	
+	public BigDecimal getReturnToDebtValue(final Receipt receipt) {
+		BigDecimal value = new BigDecimal(0);
+		for (final Item item : receipt.getItemSet()) {
+			if (item.getId().getIditemconcept() != 1) {
+				value = value.add(item.getValue());
+			}
+		}
+		return value;
+	}
 
 	private void fillItemConceptName(final Receipt receipt,
 			final List<Item> itemList) {

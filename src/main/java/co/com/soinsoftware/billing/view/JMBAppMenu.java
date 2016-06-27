@@ -28,11 +28,11 @@ public class JMBAppMenu extends JMenuBar implements ActionListener {
 
 	private static final String MENU_NEW = "Nuevo";
 
-	private static final String MENU_NEW_CONCEPT = "Crear concepto";
+	private static final String MENU_NEW_CONCEPT = "Nuevo concepto";
 
-	private static final String MENU_NEW_RECEIPT = "Crear recibo";
+	private static final String MENU_NEW_RECEIPT = "Nuevo recibo";
 
-	private static final String MENU_NEW_USER = "Crear usuario";
+	private static final String MENU_NEW_USER = "Nuevo usuario";
 
 	private static final String MENU_VIEW = "Ver";
 

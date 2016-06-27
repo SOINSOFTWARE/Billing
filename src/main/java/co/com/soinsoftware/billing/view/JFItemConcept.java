@@ -24,7 +24,7 @@ public class JFItemConcept extends JFrame {
 
     private static final long serialVersionUID = 7962825337634660703L;
 
-    private static final String TITLE = "Facturador - Concepto de facturación";
+    private static final String TITLE = "Cooperativo - Concepto de facturación";
 
     private static final String MSG_EMPTY_FIELDS = "Por favor complete el campo nombre";
 

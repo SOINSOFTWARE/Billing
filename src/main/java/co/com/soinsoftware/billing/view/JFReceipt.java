@@ -34,7 +34,7 @@ public class JFReceipt extends JFrame {
 
     private static final long serialVersionUID = 9030665802815908970L;
 
-    private static final String TITLE = "Facturador - Recibo";
+    private static final String TITLE = "Cooperativo - Recibo";
 
     private static final String MSG_EMPTY_ID = "El campo identificación debe ser completado para realizar la busqueda";
 

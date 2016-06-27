@@ -24,7 +24,7 @@ public class JFViewUser extends JFrame {
 
     private static final long serialVersionUID = -4200612234138262654L;
 
-    private static final String TITLE = "Facturador - Ver usuarios";
+    private static final String TITLE = "Cooperativo - Ver usuarios";
 
     private static final String MSG_EMPTY_ID = "El campo identificación debe ser completado para realizar la busqueda";
 

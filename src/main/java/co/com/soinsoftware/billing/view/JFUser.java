@@ -23,7 +23,7 @@ public class JFUser extends JFrame {
 
     private static final long serialVersionUID = -6950477778737766186L;
 
-    private static final String TITLE = "Facturador - Usuario";
+    private static final String TITLE = "Cooperativo - Usuario";
 
     private static final String MSG_EMPTY_FIELDS = "Por favor complete todos los campos";
 

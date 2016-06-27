@@ -20,7 +20,7 @@ public class JFLogin extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String TITLE = "Facturador - Login";
+    private static final String TITLE = "Cooperativo - Login";
 
     private static final String EMPTY_LOGIN = "Por favor complete la casilla login";
 

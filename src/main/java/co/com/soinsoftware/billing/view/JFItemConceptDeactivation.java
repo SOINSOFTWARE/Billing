@@ -25,7 +25,7 @@ public class JFItemConceptDeactivation extends JFrame {
 
     private static final long serialVersionUID = 7962825337634660703L;
 
-    private static final String TITLE = "Facturador - Eliminar concepto de facturación";
+    private static final String TITLE = "Cooperativo - Eliminar concepto de facturación";
 
     private static final String MSG_NO_SELECTION = "Debe seleccionar un elemento para realizar la eliminación";
 
