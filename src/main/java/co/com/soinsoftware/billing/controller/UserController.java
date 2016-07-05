@@ -29,7 +29,7 @@ public class UserController {
 		return this.userBLL.select(identification);
 	}
 
-	public void saveUser(final Company company, final long identification,
+	public User saveUser(final Company company, final long identification,
 			final String name, final String lastName, final BigDecimal value) {
 		User user = this.selectUser(identification);
 		final Date currentDate = new Date();
@@ -40,6 +40,7 @@ public class UserController {
 			user.setUpdated(currentDate);
 		}
 		this.saveUser(user);
+		return user;
 	}
 
 	public void saveUser(final User user) {

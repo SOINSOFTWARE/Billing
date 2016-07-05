@@ -11,8 +11,11 @@ import org.hibernate.Session;
  * @version 1.0
  */
 public abstract class AbstractDAO {
+	
+	protected static final String COLUMN_ENABLED = "enabled";
 
 	protected static final String TABLE_CONFIGURATION = "Configuration";
+	protected static final String TABLE_CREDITTYPE = "Credittype";
 	protected static final String TABLE_RECEIPT = "Receipt";
 	protected static final String TABLE_USER = "User";
 

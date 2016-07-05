@@ -206,11 +206,13 @@ public class JFReportReceipt extends JFrame {
     }
 
     private void fillReceiptTable() {
-        final Object[][] data = this.receiptController
-                .buildReceiptData(this.receiptList);
-        final DefaultTableModel tableModel = new DefaultTableModel(
-                data, RECEIPT_COLUMN_NAMES);
-        this.jtbReceipts.setModel(tableModel);
+        final Object[][] data = this.receiptList != null ?
+        		this.receiptController.buildReceiptData(this.receiptList) : null;
+        if (data != null) {
+        	final DefaultTableModel tableModel = new DefaultTableModel(
+        			data, RECEIPT_COLUMN_NAMES);
+        	this.jtbReceipts.setModel(tableModel);
+        }
         this.jtbReceipts.setFillsViewportHeight(true);
         this.jtbReceipts.setEnabled(false);
         for (int i = 0; i < 2; i++) {
@@ -224,37 +226,54 @@ public class JFReportReceipt extends JFrame {
             }
         }
         this.jtbReceipts.repaint();
-
-        final Locale locale = new Locale("es", "CO");
+        this.fillTotalPerMonth(data);
+        this.fillTotal();
+        this.fillTotalDebt();
+        this.fillTotalVoluntarySave();
+        this.pnReceiptList.revalidate();
+        this.pnReceiptList.repaint();
+    }
+    
+    private void fillTotalPerMonth(final Object[][] data) {
+    	final Locale locale = new Locale("es", "CO");
         final NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
-        final BigDecimal totalMonth = this.getTotalMonth(data);
+        final BigDecimal totalMonth = data != null ? this.getTotalMonth(data) : new BigDecimal(0);
         final String totalMonthStr = "Total recaudado del mes: "
                 + formatter.format(totalMonth.doubleValue());
         this.jlbTotalMonth.setText(totalMonthStr);
         this.jlbTotalMonth.setVisible(true);
-
-        final BigDecimal total = this.receiptController
+    }
+    
+    private void fillTotal() {
+    	final Locale locale = new Locale("es", "CO");
+        final NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
+    	final BigDecimal total = this.receiptController
                 .selectTotal(this.client);
         final String totalStr = "Total recaudado: "
                 + formatter.format(total.doubleValue());
         this.jlbTotal.setText(totalStr);
         this.jlbTotal.setVisible(true);
-
-        final BigDecimal debt = this.userController.selectDebt(this.client);
-        final String debtStr = "Total de la deuda: "
-                + formatter.format(debt.doubleValue());
-        this.jlbDebt.setText(debtStr);
-        this.jlbDebt.setVisible(true);
-
-        final BigDecimal voluntarySave = this.receiptController
+    }
+    
+    private void fillTotalDebt() {
+    	final Locale locale = new Locale("es", "CO");
+        final NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
+    	 final BigDecimal debt = this.userController.selectDebt(this.client);
+         final String debtStr = "Total de la deuda: "
+                 + formatter.format(debt.doubleValue());
+         this.jlbDebt.setText(debtStr);
+         this.jlbDebt.setVisible(true);
+    }
+    
+    private void fillTotalVoluntarySave() {
+    	final Locale locale = new Locale("es", "CO");
+        final NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
+    	final BigDecimal voluntarySave = this.receiptController
                 .selectVoluntarySave(this.client);
         final String voluntarySaveStr = "Total ahorro voluntario: "
                 + formatter.format(voluntarySave.doubleValue());
         this.jlbVoluntarySave.setText(voluntarySaveStr);
         this.jlbVoluntarySave.setVisible(true);
-
-        this.pnReceiptList.revalidate();
-        this.pnReceiptList.repaint();
     }
 
     private BigDecimal getTotalMonth(final Object[][] data) {
@@ -806,18 +825,18 @@ public class JFReportReceipt extends JFrame {
             final boolean enabled = this.rbtEnabled.isSelected();
             this.receiptList = this.receiptController.select(year, month,
                     this.client, enabled);
-            if (this.receiptList != null && this.receiptList.size() > 0) {
-                this.fillReceiptTable();
-                this.setViewReceiptFieldsVisibility(true);
-            } else {
+            if (this.receiptList == null || this.receiptList.size() == 0) {
                 ViewUtils.showMessage(this, MSG_NO_RECORDS, TITLE,
                         JOptionPane.INFORMATION_MESSAGE);
             }
+            this.fillReceiptTable();
+            this.setViewReceiptFieldsVisibility(true);
         }
     }//GEN-LAST:event_jbtSearchActionPerformed
 
     private void jbtPrintListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtPrintListActionPerformed
-        if (this.jbtPrintList.isVisible() && this.receiptList != null) {
+        if (this.jbtPrintList.isVisible() && this.receiptList != null
+        		&& this.receiptList.size() > 0) {
             final ThreadGenerator generator = new ThreadGenerator(this.receiptList);
             generator.start();
             ViewUtils.showMessage(this, MSG_PRINT_STARTED, TITLE,

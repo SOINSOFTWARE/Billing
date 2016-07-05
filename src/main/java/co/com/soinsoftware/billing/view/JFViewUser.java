@@ -5,18 +5,22 @@
  */
 package co.com.soinsoftware.billing.view;
 
-import co.com.soinsoftware.billing.controller.MenuController;
-import co.com.soinsoftware.billing.controller.UserController;
-import co.com.soinsoftware.billing.entity.User;
-
 import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
+
+import co.com.soinsoftware.billing.controller.CreditController;
+import co.com.soinsoftware.billing.controller.MenuController;
+import co.com.soinsoftware.billing.controller.UserController;
+import co.com.soinsoftware.billing.entity.Credit;
+import co.com.soinsoftware.billing.entity.Credittype;
+import co.com.soinsoftware.billing.entity.User;
 
 /**
  * @author Carlos Rodriguez
@@ -44,6 +48,10 @@ public class JFViewUser extends JFrame {
     private final UserController userController;
 
     private User client;
+    
+    private final CreditController creditController;
+	
+	private final Set<Credittype> creditTypeSet;
 
     /**
      * Creates new form JFViewUser
@@ -54,11 +62,14 @@ public class JFViewUser extends JFrame {
         super();
         this.loggedUser = loggedUser;
         this.initComponents();
-        this.userController = new UserController();        
+        this.userController = new UserController();  
+        this.creditController = new CreditController();
         this.setTextFieldLimits();
         this.setUserFieldsVisibility(false);
         this.setTitle(this.loggedUser.getCompany().getName() + " - " + TITLE);
         this.setMaximized();
+        this.creditTypeSet = this.creditController.selectCreditType();
+		this.fillCreditTypeComboBox();
     }
 
     public void addController(final MenuController controller) {
@@ -77,6 +88,16 @@ public class JFViewUser extends JFrame {
         this.setMaximizedBounds(env.getMaximumWindowBounds());
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
     }
+    
+    private void fillCreditTypeComboBox() {
+		final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>();
+		model.addElement("Seleccione uno...");
+		for (final Credittype creditType : this.creditTypeSet) {
+			model.addElement(creditType.getName());
+		}
+		this.jcbCreditType.setModel(model);
+		this.jtfValue.setEditable(false);
+	}
 
     private void setTextFieldLimits() {
         this.jtfName.setDocument(new JTextFieldLimit(45));
@@ -107,7 +128,9 @@ public class JFViewUser extends JFrame {
         this.jtfIdentification.setText(identification);
         this.jtfName.setText(name);
         this.jtfLastName.setText(lastName);
-        this.jtfValue.setText(value);
+        this.jtfDebtValue.setText(value);
+        this.jcbCreditType.setSelectedIndex(0);
+        this.jtfValue.setText("0");
     }
 
     private boolean validateUpdatedClientData() {
@@ -132,15 +155,32 @@ public class JFViewUser extends JFrame {
         this.client.setName(name);
         this.client.setLastname(lastName);
         this.client.setUpdated(currentDate);
-        this.client.setValue(value);
+        this.client.setValue(this.client.getValue().add(value));
     }
 
     private boolean validateValue() {
         final String valueStr = this.jtfValue.getText().replace(".", "")
                 .replace(",", "");
         final BigDecimal value = new BigDecimal(valueStr);
-        return value.doubleValue() >= this.client.getValue().doubleValue();
+        return value.doubleValue() > 0;
     }
+    
+    private void saveCreditInformation(final User user) {
+		final String valueStr = this.jtfValue.getText().replace(".", "")
+				.replace(",", "");
+		final BigDecimal value = new BigDecimal(valueStr);
+		if (value.doubleValue() > 0) {
+			for (final Credittype creditType : this.creditTypeSet) {
+				if (creditType.getName().equals(this.jcbCreditType.getSelectedItem())) {
+					final Date currentDate = new Date();
+					final Credit credit = new Credit(creditType, user, value, currentDate, currentDate, true);
+					this.creditController.saveCredit(credit);
+					this.updateTextFields();
+					break;
+				}
+			}
+		}
+	}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -164,12 +204,15 @@ public class JFViewUser extends JFrame {
         jlbLastName = new javax.swing.JLabel();
         jtfLastName = new javax.swing.JTextField();
         jlbValue = new javax.swing.JLabel();
-        jtfValue = new javax.swing.JFormattedTextField();
+        jtfDebtValue = new javax.swing.JFormattedTextField();
         jbtSave = new javax.swing.JButton();
+        jcbCreditType = new javax.swing.JComboBox<String>();
+        jlbValue1 = new javax.swing.JLabel();
+        jtfValue = new javax.swing.JFormattedTextField();
+        jlbCreditType = new javax.swing.JLabel();
         lbImage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/invoice.png")));
         setMinimumSize(new java.awt.Dimension(520, 430));
 
         pnTitle.setBackground(new java.awt.Color(255, 255, 255));
@@ -272,9 +315,10 @@ public class JFViewUser extends JFrame {
         jlbValue.setFont(new java.awt.Font("Verdana", 1, 10)); // NOI18N
         jlbValue.setText("Deuda:");
 
-        jtfValue.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0"))));
-        jtfValue.setText("0");
-        jtfValue.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
+        jtfDebtValue.setEditable(false);
+        jtfDebtValue.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0"))));
+        jtfDebtValue.setText("0");
+        jtfDebtValue.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
         jbtSave.setBackground(new java.awt.Color(16, 135, 221));
         jbtSave.setFont(new java.awt.Font("Verdana", 1, 10)); // NOI18N
@@ -287,27 +331,52 @@ public class JFViewUser extends JFrame {
             }
         });
 
+        jcbCreditType.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
+        jcbCreditType.setModel(new javax.swing.DefaultComboBoxModel<String>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jcbCreditType.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcbCreditTypeActionPerformed(evt);
+            }
+        });
+
+        jlbValue1.setFont(new java.awt.Font("Verdana", 1, 10)); // NOI18N
+        jlbValue1.setText("Cantidad($):");
+
+        jtfValue.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0"))));
+        jtfValue.setText("0");
+        jtfValue.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
+
+        jlbCreditType.setFont(new java.awt.Font("Verdana", 1, 10)); // NOI18N
+        jlbCreditType.setText("Tipo de credito:");
+
         javax.swing.GroupLayout pnUserLayout = new javax.swing.GroupLayout(pnUser);
         pnUser.setLayout(pnUserLayout);
         pnUserLayout.setHorizontalGroup(
             pnUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnUserLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(pnUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnUserLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jbtSave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jcbCreditType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jtfValue)
-                    .addGroup(pnUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(pnUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jlbName)
-                            .addComponent(jlbIdentification)
-                            .addComponent(jlbLastName)
-                            .addComponent(jtfLastName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jtfName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jtfIdentification))
-                        .addComponent(jlbValue)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnUserLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jbtSave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnUserLayout.createSequentialGroup()
+                        .addGroup(pnUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jtfDebtValue)
+                                .addGroup(pnUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(pnUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jlbName)
+                                        .addComponent(jlbIdentification)
+                                        .addComponent(jlbLastName)
+                                        .addComponent(jtfLastName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jtfName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jtfIdentification))
+                                    .addComponent(jlbValue)))
+                            .addComponent(jlbValue1)
+                            .addComponent(jlbCreditType))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         pnUserLayout.setVerticalGroup(
@@ -328,10 +397,18 @@ public class JFViewUser extends JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jlbValue)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jtfValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jtfDebtValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jlbCreditType)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jcbCreditType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jlbValue1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jtfValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jbtSave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         lbImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/soin.png"))); // NOI18N
@@ -358,8 +435,8 @@ public class JFViewUser extends JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnUser, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                    .addComponent(pnUser, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lbImage, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -393,6 +470,7 @@ public class JFViewUser extends JFrame {
                     if (confirm == JOptionPane.OK_OPTION) {
                         this.updateClientData();
                         this.userController.saveUser(this.client);
+                        this.saveCreditInformation(this.client);
                         ViewUtils.showMessage(this, ViewUtils.MSG_SAVED, TITLE,
                                 JOptionPane.INFORMATION_MESSAGE);
                     }
@@ -407,14 +485,23 @@ public class JFViewUser extends JFrame {
         }
     }//GEN-LAST:event_jbtSaveActionPerformed
 
+    private void jcbCreditTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbCreditTypeActionPerformed
+        this.jtfValue.setEditable(this.jcbCreditType.getSelectedIndex() > 0);
+        this.jtfValue.setText("0");
+    }//GEN-LAST:event_jcbCreditTypeActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jbtSave;
     private javax.swing.JButton jbtSearch;
+    private javax.swing.JComboBox<String> jcbCreditType;
+    private javax.swing.JLabel jlbCreditType;
     private javax.swing.JLabel jlbIdentification;
     private javax.swing.JLabel jlbLastName;
     private javax.swing.JLabel jlbName;
     private javax.swing.JLabel jlbSearchIdentification;
     private javax.swing.JLabel jlbValue;
+    private javax.swing.JLabel jlbValue1;
+    private javax.swing.JFormattedTextField jtfDebtValue;
     private javax.swing.JFormattedTextField jtfIdentification;
     private javax.swing.JTextField jtfLastName;
     private javax.swing.JTextField jtfName;

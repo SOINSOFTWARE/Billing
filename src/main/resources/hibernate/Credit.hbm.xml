@@ -3,15 +3,17 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 26-may-2016 15:17:44 by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="co.com.soinsoftware.billing.entity.Item" table="item" catalog="billing" optimistic-lock="version">
-        <composite-id name="id" class="co.com.soinsoftware.billing.entity.ItemId">
-            <key-property name="idreceipt" type="int">
-                <column name="idreceipt" />
-            </key-property>
-            <key-property name="iditemconcept" type="int">
-                <column name="iditemconcept" />
-            </key-property>
-        </composite-id>
+    <class name="co.com.soinsoftware.billing.entity.Credit" table="credit" catalog="billing" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="creditType" class="co.com.soinsoftware.billing.entity.Credittype" fetch="select">
+            <column name="idcredittype" not-null="true" />
+        </many-to-one>
+        <many-to-one name="user" class="co.com.soinsoftware.billing.entity.User" fetch="select">
+            <column name="iduser" not-null="true" />
+        </many-to-one>
         <property name="value" type="big_decimal">
             <column name="value" precision="16" not-null="true" />
         </property>

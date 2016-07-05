@@ -19,7 +19,6 @@ public class ReceiptDAO extends AbstractDAO {
 	private static final String COLUMN_DATE = "receiptdate";
 	private static final String COLUMN_ID_USER = "iduser";
 	private static final String COLUMN_NUMBER = "number";
-	private static final String COLUMN_ENABLED = "enabled";
 	private static final String PARAM_YEAR = "year";
 	private static final String PARAM_MONTH = "month";
 

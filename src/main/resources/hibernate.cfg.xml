@@ -9,11 +9,13 @@
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/billing</property>
         <property name="hibernate.connection.username">root</property>
         
-        <mapping resource="co/com/soinsoftware/billing/entity/Company.hbm.xml"/>
-        <mapping resource="co/com/soinsoftware/billing/entity/Configuration.hbm.xml"/>
-        <mapping resource="co/com/soinsoftware/billing/entity/Item.hbm.xml"/>
-        <mapping resource="co/com/soinsoftware/billing/entity/Itemconcept.hbm.xml"/>
-        <mapping resource="co/com/soinsoftware/billing/entity/Receipt.hbm.xml"/>
-        <mapping resource="co/com/soinsoftware/billing/entity/User.hbm.xml"/>
+        <mapping resource="hibernate/Company.hbm.xml"/>
+        <mapping resource="hibernate/Configuration.hbm.xml"/>
+        <mapping resource="hibernate/Credit.hbm.xml"/>
+        <mapping resource="hibernate/Credittype.hbm.xml"/>
+        <mapping resource="hibernate/Item.hbm.xml"/>
+        <mapping resource="hibernate/Itemconcept.hbm.xml"/>
+        <mapping resource="hibernate/Receipt.hbm.xml"/>
+        <mapping resource="hibernate/User.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>
