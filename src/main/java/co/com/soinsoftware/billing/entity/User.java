@@ -42,6 +42,8 @@ public class User implements Serializable {
 	private Set<Receipt> receiptsForIdcreatoruser = new HashSet<Receipt>(0);
 
 	private Set<Receipt> receiptsForIdlastchangeuser = new HashSet<Receipt>(0);
+	
+	private Set<Credit> credits = new HashSet<Credit>(0);
 
 	private volatile String fullName;
 
@@ -70,7 +72,8 @@ public class User implements Serializable {
 			final Date updated, final boolean enabled,
 			final Set<Receipt> receiptsForIduser,
 			final Set<Receipt> receiptsForIdcreatoruser,
-			final Set<Receipt> receiptsForIdlastchangeuser) {
+			final Set<Receipt> receiptsForIdlastchangeuser,
+			final Set<Credit> credits) {
 		super();
 		this.company = company;
 		this.identification = identification;
@@ -85,6 +88,7 @@ public class User implements Serializable {
 		this.receiptsForIduser = receiptsForIduser;
 		this.receiptsForIdcreatoruser = receiptsForIdcreatoruser;
 		this.receiptsForIdlastchangeuser = receiptsForIdlastchangeuser;
+		this.credits = credits;
 		this.fullName = this.name + " " + this.lastname;
 	}
 
@@ -200,6 +204,14 @@ public class User implements Serializable {
 	public void setReceiptsForIdlastchangeuser(
 			final Set<Receipt> receiptsForIdlastchangeuser) {
 		this.receiptsForIdlastchangeuser = receiptsForIdlastchangeuser;
+	}
+	
+	public Set<Credit> getCredits() {
+		return this.credits;
+	}
+
+	public void setCredits(final Set<Credit> credits) {
+		this.credits = credits;
 	}
 
 	public String getFullName() {

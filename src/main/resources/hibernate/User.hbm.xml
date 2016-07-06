@@ -56,5 +56,11 @@
             </key>
             <one-to-many class="co.com.soinsoftware.billing.entity.Receipt" />
         </set>
+        <set name="credits" table="credit" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="iduser" not-null="true" />
+            </key>
+            <one-to-many class="co.com.soinsoftware.billing.entity.Credit" />
+        </set>
     </class>
 </hibernate-mapping>
