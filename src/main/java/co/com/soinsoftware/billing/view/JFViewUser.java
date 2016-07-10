@@ -45,7 +45,7 @@ public class JFViewUser extends JFrame {
 
     private static final String MSG_VALUE = "La deuda no puede ser disminuida en este modulo";
     
-    private static final String[] CREDIT_COLUMN_NAMES = {"Fecha credito", "Valor"};
+    private static final String[] CREDIT_COLUMN_NAMES = {"Fecha crédito", "Valor"};
 
     private final User loggedUser;
 
@@ -383,7 +383,7 @@ public class JFViewUser extends JFrame {
         jtfValue.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
         jlbCreditType.setFont(new java.awt.Font("Verdana", 1, 10)); // NOI18N
-        jlbCreditType.setText("Tipo de credito:");
+        jlbCreditType.setText("Tipo de crédito:");
 
         jtbCredit.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

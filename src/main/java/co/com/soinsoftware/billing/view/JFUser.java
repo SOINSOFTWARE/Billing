@@ -267,7 +267,7 @@ public class JFUser extends JFrame {
         });
 
         jlbCreditType.setFont(new java.awt.Font("Verdana", 1, 10)); // NOI18N
-        jlbCreditType.setText("Tipo de credito:");
+        jlbCreditType.setText("Tipo de crédito:");
 
         jcbCreditType.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         jcbCreditType.setModel(new javax.swing.DefaultComboBoxModel<String>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
