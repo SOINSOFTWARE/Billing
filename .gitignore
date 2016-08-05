@@ -64,3 +64,4 @@ target/classes/receiptList.jasper
 target/classes/receiptList.jrxml
 target/classes/META-INF/maven/co.com.soinsoftware/billing/pom.properties
 *.class
+target/test-classes/.netbeans_automatic_build
